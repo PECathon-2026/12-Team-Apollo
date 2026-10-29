@@ -1,64 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Scan, UploadCloud, Eye, Info, Sparkles, Filter, Target } from 'lucide-react';
 import { CelestialDetection } from '../../types';
+import { restoreAstrophoto } from './restorationService';
+import { detectCelestialObjects } from './objectDetection';
 
-export const SpiritLens: React.FC = () => {
+export interface SpiritLensProps {
+  onProcessComplete?: (data: any) => void; 
+}
+
+export const SpiritLens: React.FC<SpiritLensProps> = ({ onProcessComplete }) => {
   const [selectedDetection, setSelectedDetection] = useState<CelestialDetection | null>(null);
   const [filterConfidence, setFilterConfidence] = useState<number>(70);
+  
+  const [imageUrl, setImageUrl] = useState<string>('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const mockDetections: CelestialDetection[] = [
-    {
-      id: 'det-01',
-      label: "Orion's Belt (Mitsuboshi)",
-      japaneseLabel: '三つ星 (Mitsuboshi)',
-      celestialClass: 'constellation',
-      confidence: 0.98,
-      bbox: { x: 0.42, y: 0.44, width: 0.22, height: 0.14 },
-      colorHex: '#e5b959',
-      distanceLightYears: 1200,
-      astronomicalNotes: 'Alnitak, Alnilam, and Mintaka - supergiant stars illuminating Orion.',
-      samuraiConstellationLore: 'Adopted as the samurai crest (Kamon) of the legendary Mōri clan, symbolizing unshakeable martial brotherhood.',
-    },
-    {
-      id: 'det-02',
-      label: 'Orion Nebula (M42)',
-      japaneseLabel: 'オリオン大星雲',
-      celestialClass: 'nebula',
-      confidence: 0.94,
-      bbox: { x: 0.46, y: 0.62, width: 0.16, height: 0.18 },
-      colorHex: '#d63c3c',
-      distanceLightYears: 1344,
-      astronomicalNotes: 'Massive diffuse stellar nursery glowing with ionized hydrogen emission.',
-      samuraiConstellationLore: 'Regarded in samurai lore as the scabbard jewel of the warrior god, glowing with ethereal fire.',
-    },
-    {
-      id: 'det-03',
-      label: 'Pleiades Cluster (Subaru)',
-      japaneseLabel: '昴 (Subaru)',
-      celestialClass: 'star_cluster',
-      confidence: 0.91,
-      bbox: { x: 0.14, y: 0.18, width: 0.18, height: 0.2 },
-      colorHex: '#85e3a8',
-      distanceLightYears: 444,
-      astronomicalNotes: 'Open star cluster containing over 1,000 stars dominated by luminous blue B-types.',
-      samuraiConstellationLore: 'Mentioned in the Kojiki as the gathered beads of the celestial hair ornaments worn by Amaterasu.',
-    },
-    {
-      id: 'det-04',
-      label: 'Mars (Fire Star)',
-      japaneseLabel: '火星 (Kasei)',
-      celestialClass: 'planet',
-      confidence: 0.89,
-      bbox: { x: 0.78, y: 0.28, width: 0.1, height: 0.1 },
-      colorHex: '#ff5252',
-      astronomicalNotes: 'Apparent magnitude -1.8, reddish iron oxide hue.',
-      samuraiConstellationLore: 'The star of tactical conquest and battle fury. Ancient generals calibrated siege timing to its ascent.',
-    },
-  ];
+  // We start with an empty array now, because the AI will fill it!
+  const [detections, setDetections] = useState<CelestialDetection[]>([]);
 
-  const visibleDetections = mockDetections.filter(
+  const visibleDetections = detections.filter(
     (d) => d.confidence * 100 >= filterConfidence
   );
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsProcessing(true);
+      setDetections([]); // Clear old detections
+      setSelectedDetection(null);
+      
+      // 1. Show the uploaded image immediately
+      const localImageUrl = URL.createObjectURL(file);
+      setImageUrl(localImageUrl);
+      
+      // 2. Call the Backend Restoration API
+      console.log("Sending to restoration service...");
+      const restoredData = await restoreAstrophoto(localImageUrl);
+      
+      // Update UI with the shiny restored image from the server
+      setImageUrl(restoredData.restoredImageUrl);
+
+      // 3. Run the Object Detection AI on the restored image
+      console.log("Running object detection...");
+      const detectedObjects = await detectCelestialObjects(restoredData.restoredImageUrl);
+      setDetections(detectedObjects);
+
+      // 4. Pass the final data up to Member 1's Dashboard!
+      if (onProcessComplete) {
+        onProcessComplete({
+          originalImageUrl: localImageUrl,
+          restoredImageUrl: restoredData.restoredImageUrl,
+          detections: detectedObjects
+        });
+      }
+
+    } catch (error) {
+      console.error("AI Pipeline failed:", error);
+      alert("Failed to process the celestial image. Ensure the server is running.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -83,9 +88,22 @@ export const SpiritLens: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button className="btn-samurai-gold">
+            {/* HIDDEN FILE INPUT */}
+            <input 
+              type="file" 
+              accept="image/*" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              style={{ display: 'none' }} 
+            />
+            {/* TRIGGER BUTTON */}
+            <button 
+              className="btn-samurai-gold" 
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isProcessing}
+            >
               <UploadCloud size={16} />
-              Upload Astrophoto
+              {isProcessing ? 'Processing...' : 'Upload Astrophoto'}
             </button>
           </div>
         </div>
@@ -115,7 +133,7 @@ export const SpiritLens: React.FC = () => {
                 borderRadius: 'var(--radius-md)',
                 overflow: 'hidden',
                 border: '1px solid var(--gold-border)',
-                backgroundImage: 'url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80")',
+                backgroundImage: `url("${imageUrl}")`, // DYNAMIC IMAGE URL HERE
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 boxShadow: 'var(--shadow-sumi)',
@@ -158,7 +176,7 @@ export const SpiritLens: React.FC = () => {
                       style={{
                         position: 'absolute',
                         top: '-24px',
-                        left: '0',
+                        left: '-2px',
                         backgroundColor: 'rgba(7, 8, 11, 0.9)',
                         color: det.colorHex,
                         border: `1px solid ${det.colorHex}`,

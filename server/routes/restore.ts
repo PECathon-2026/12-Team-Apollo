@@ -65,6 +65,7 @@ restoreRouter.post('/', (req: Request, res: Response) => {
       imageUrl ||
       'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40',
     restoredImageUrl:
+      imageUrl ||
       'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=90',
     parameters: {
       preset: selectedPreset,
