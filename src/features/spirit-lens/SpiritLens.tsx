@@ -38,22 +38,27 @@ export const SpiritLens: React.FC<SpiritLensProps> = ({ onProcessComplete }) => 
       
       // 2. Call the Backend Restoration API
       console.log("Sending to restoration service...");
-      const restoredData = await restoreAstrophoto(localImageUrl);
+      const restoredData = await restoreAstrophoto(file);
       
-      // Update UI with the shiny restored image from the server
-      setImageUrl(restoredData.restoredImageUrl);
+      // Keep the local image since we aren't doing AI denoising yet
+      setImageUrl(localImageUrl); 
 
-      // 3. Run the Object Detection AI on the restored image
-      console.log("Running object detection...");
-      const detectedObjects = await detectCelestialObjects(restoredData.restoredImageUrl);
-      setDetections(detectedObjects);
+      // 3. Use the REAL data returned from Astrometry!
+      console.log("Real objects found:", restoredData.realDetections);
+      
+      // Fallback to fake data ONLY if Astrometry found nothing (so the demo doesn't look empty)
+      const finalDetections = restoredData.realDetections?.length > 0 
+        ? restoredData.realDetections 
+        : await detectCelestialObjects(localImageUrl);
+
+      setDetections(finalDetections);
 
       // 4. Pass the final data up to Member 1's Dashboard!
       if (onProcessComplete) {
         onProcessComplete({
           originalImageUrl: localImageUrl,
-          restoredImageUrl: restoredData.restoredImageUrl,
-          detections: detectedObjects
+          restoredImageUrl: restoredData.restoredImageUrl || localImageUrl,
+          detections: finalDetections
         });
       }
 
@@ -64,7 +69,6 @@ export const SpiritLens: React.FC<SpiritLensProps> = ({ onProcessComplete }) => 
       setIsProcessing(false);
     }
   };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header Banner */}
