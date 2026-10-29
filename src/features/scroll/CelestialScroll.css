@@ -1,0 +1,1153 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --cs-ink: #191a20;
+  --cs-ink-soft: #55545a;
+  --cs-paper: #f5f0e5;
+  --cs-paper-light: #fcf9f1;
+  --cs-paper-dark: #e8dfcd;
+  --cs-cinnabar: #a43b32;
+  --cs-cinnabar-dark: #7e2925;
+  --cs-gold: #b79a61;
+  --cs-border: rgba(66, 54, 41, 0.16);
+  --cs-shadow: 0 14px 40px rgba(32, 26, 18, 0.09);
+  --cs-serif: 'Cormorant Garamond', Georgia, serif;
+  --cs-sans: 'Inter', sans-serif;
+  --cs-japanese: 'Noto Sans JP', sans-serif;
+}
+
+/* Page shell — matches the outer .cs-container in the TSX */
+.cs-container {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 38px clamp(16px, 4vw, 64px) 30px;
+  color: var(--cs-ink);
+  background:
+    radial-gradient(ellipse at 12% 7%, rgba(188, 160, 112, 0.14), transparent 30%),
+    radial-gradient(ellipse at 91% 26%, rgba(164, 59, 50, 0.055), transparent 27%),
+    var(--cs-paper);
+  font-family: var(--cs-sans);
+}
+
+.cs-container::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E");
+}
+
+.cs-container *,
+.cs-container *::before,
+.cs-container *::after {
+  box-sizing: border-box;
+}
+
+.cs-container button,
+.cs-container input,
+.cs-container select {
+  font: inherit;
+}
+
+.cs-container button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cs-container :is(button, a, input, select):focus-visible {
+  outline: 2px solid var(--cs-cinnabar);
+  outline-offset: 3px;
+}
+
+/* Header */
+.cs-header {
+  position: relative;
+  max-width: 850px;
+  margin: 0 auto 38px;
+  text-align: center;
+}
+
+.cs-header h1 {
+  margin: 0;
+  font-family: var(--cs-serif);
+  font-size: clamp(42px, 7vw, 76px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.cs-header h2 {
+  margin: 15px 0 0;
+  color: var(--cs-cinnabar);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  line-height: 1.7;
+}
+
+.cs-header p {
+  max-width: 590px;
+  margin: 17px auto 14px;
+  color: var(--cs-ink-soft);
+  font-family: var(--cs-serif);
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.55;
+}
+
+.cs-header p strong {
+  color: var(--cs-cinnabar-dark);
+  font-family: var(--cs-sans);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.cs-header > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  margin-top: 4px;
+  padding: 8px 14px;
+  border: 1px solid var(--cs-border);
+  border-radius: 3px;
+  color: var(--cs-ink);
+  background: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  font-size: 12px;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.cs-header > button:hover {
+  border-color: var(--cs-cinnabar);
+  background: var(--cs-paper-light);
+}
+
+.cs-header > button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Main Moon summary — actual markup uses .cs-moon-summary */
+.cs-moon-summary {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 48px;
+  padding: clamp(27px, 4vw, 45px);
+  overflow: hidden;
+  border: 1px solid rgba(235, 225, 205, 0.16);
+  color: #f4eee4;
+  background:
+    radial-gradient(circle at 83% 24%, rgba(164, 59, 50, 0.18), transparent 27%),
+    radial-gradient(circle at 15% 52%, rgba(119, 127, 146, 0.2), transparent 34%),
+    #202129;
+  box-shadow: var(--cs-shadow);
+}
+
+.cs-moon-summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 12px;
+  border: 1px solid rgba(226, 208, 174, 0.13);
+  pointer-events: none;
+  content: '';
+}
+
+.cs-moon-summary::after {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: clamp(25px, 9vw, 120px);
+  width: clamp(100px, 17vw, 190px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(239, 222, 188, 0.12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 17px rgba(239, 222, 188, 0.025), 0 0 0 35px rgba(239, 222, 188, 0.02);
+  transform: translateY(-50%);
+  pointer-events: none;
+  content: '';
+}
+
+.cs-moon-summary h2 {
+  position: relative;
+  margin: 0 0 3px;
+  font-family: var(--cs-serif);
+  font-size: clamp(36px, 5vw, 53px);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.cs-moon-summary h3 {
+  position: relative;
+  margin: 8px 0 21px;
+  color: #d6c6a4;
+  font-family: var(--cs-japanese);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+}
+
+.cs-moon-summary > p {
+  position: relative;
+  margin: 8px 0;
+  color: #cbc5bb;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.cs-moon-summary > p strong {
+  color: #f3ead9;
+  font-family: var(--cs-serif);
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.cs-samurai-directive {
+  position: relative;
+  max-width: 650px;
+  margin-top: 22px;
+  padding: 11px 0 0 14px;
+  border-top: 1px solid rgba(240, 228, 204, 0.12);
+  border-left: 2px solid var(--cs-cinnabar);
+}
+
+.cs-samurai-directive h4 {
+  margin: 0 0 5px;
+  color: #e2c994;
+  font-family: var(--cs-serif);
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.cs-samurai-directive p {
+  margin: 0;
+  color: #d2cbc0;
+  font-family: var(--cs-serif);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* Calendar controls */
+.cs-controls {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 26px;
+}
+
+.cs-controls > h2 {
+  margin: 0 0 18px;
+  font-family: var(--cs-serif);
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.cs-controls > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 37px;
+  margin: 0 7px 10px 0;
+  padding: 8px 11px;
+  border: 1px solid var(--cs-border);
+  border-radius: 3px;
+  color: var(--cs-ink);
+  background: rgba(255, 255, 255, 0.34);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.4;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.cs-controls > button:hover {
+  border-color: var(--cs-cinnabar);
+  background: var(--cs-paper-light);
+}
+
+.cs-controls > button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.cs-controls > p {
+  margin: 6px 0;
+  color: #69645b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.cs-filters {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.35fr) minmax(140px, 1fr) minmax(140px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+  margin: 18px 0 20px;
+  padding: 17px;
+  border: 1px solid var(--cs-border);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.cs-filters label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+  color: #656057;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+.cs-filters select,
+.cs-filters input[type='date'] {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 9px;
+  border: 1px solid rgba(66, 54, 41, 0.2);
+  border-radius: 2px;
+  outline: none;
+  color: var(--cs-ink);
+  background: var(--cs-paper-light);
+  font-size: 12px;
+}
+
+.cs-filters select:focus,
+.cs-filters input[type='date']:focus {
+  border-color: var(--cs-cinnabar);
+  box-shadow: 0 0 0 2px rgba(164, 59, 50, 0.1);
+}
+
+.cs-filters > button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--cs-border);
+  border-radius: 3px;
+  color: var(--cs-ink);
+  background: rgba(255, 255, 255, 0.38);
+  cursor: pointer;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.cs-filters > button:hover {
+  border-color: var(--cs-cinnabar);
+  background: var(--cs-paper-light);
+}
+
+.cs-view-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid var(--cs-border);
+}
+
+.cs-view-toggles button {
+  min-height: 42px;
+  padding: 9px 15px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #6c665c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.cs-view-toggles button:hover,
+.cs-view-toggles button:focus-visible {
+  border-bottom-color: var(--cs-cinnabar);
+  color: var(--cs-cinnabar-dark);
+}
+
+/* Monthly calendar */
+.cs-calendar-view {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 38px;
+  padding: clamp(14px, 2.4vw, 26px);
+  border: 1px solid var(--cs-border);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.cs-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.cs-calendar-header h3 {
+  margin: 0;
+  font-family: var(--cs-serif);
+  font-size: clamp(23px, 3vw, 30px);
+  font-weight: 600;
+  text-align: center;
+}
+
+.cs-calendar-header button {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--cs-border);
+  border-radius: 3px;
+  color: #5a5349;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.cs-calendar-header button:hover {
+  border-color: var(--cs-cinnabar);
+  color: var(--cs-cinnabar-dark);
+  background: var(--cs-paper-light);
+}
+
+.cs-calendar-header button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cs-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.cs-calendar-day-header {
+  padding: 10px 3px 12px;
+  color: #797166;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.cs-calendar-day {
+  display: flex;
+  min-width: 0;
+  min-height: clamp(52px, 6.4vw, 78px);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 7px;
+  padding: 8px;
+  border: 0;
+  border-top: 1px solid rgba(66, 54, 41, 0.1);
+  border-right: 1px solid rgba(66, 54, 41, 0.07);
+  color: var(--cs-ink);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+
+.cs-calendar-day-header:nth-child(7n) {
+  border-right: 0;
+}
+
+.cs-calendar-day:nth-child(7n) {
+  border-right: 0;
+}
+
+.cs-calendar-day:hover:not(.blank) {
+  background: rgba(164, 59, 50, 0.06);
+}
+
+.cs-calendar-day.today > span:first-child {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  margin: -3px 0 -1px -4px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--cs-cinnabar);
+}
+
+.cs-calendar-day.selected {
+  outline: 1px solid var(--cs-cinnabar);
+  outline-offset: -1px;
+  background: rgba(164, 59, 50, 0.09);
+}
+
+.cs-calendar-day.blank,
+.cs-calendar-day:disabled {
+  cursor: default;
+}
+
+.cs-calendar-day > span:first-child {
+  font-family: var(--cs-serif);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.cs-day-indicators {
+  display: flex;
+  min-height: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: #746d63;
+  font-size: 9px;
+}
+
+.cs-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.cs-dot--meteor_shower { background: #bc8b36; }
+.cs-dot--eclipse { background: #a43b32; }
+.cs-dot--moon_phase { background: #818b9b; }
+.cs-dot--iss_pass { background: #527a85; }
+.cs-dot--rocket_launch { background: #75629a; }
+
+.cs-calendar-view > p {
+  margin: 16px 0 0;
+  color: #797166;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+/* Event results list */
+.cs-events-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cs-events-list > h3,
+.cs-events-list > p {
+  grid-column: 1 / -1;
+}
+
+.cs-events-list > h3 {
+  margin: 0 0 4px;
+  font-family: var(--cs-serif);
+  font-size: clamp(26px, 3.5vw, 35px);
+  font-weight: 600;
+}
+
+.cs-events-list > p {
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed var(--cs-border);
+  color: #746d63;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.cs-events-list > p strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--cs-ink);
+  font-family: var(--cs-serif);
+  font-size: 22px;
+}
+
+.cs-event-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 19px;
+  border: 1px solid var(--cs-border);
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 3px 13px rgba(32, 26, 18, 0.025);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.cs-event-card:hover {
+  border-color: rgba(164, 59, 50, 0.35);
+  box-shadow: 0 8px 25px rgba(32, 26, 18, 0.06);
+  transform: translateY(-1px);
+}
+
+.cs-event-card > .cs-moon {
+  align-self: flex-start;
+  min-height: 80px;
+  margin: 0 0 8px !important;
+  font-size: clamp(3rem, 5vw, 4rem) !important;
+  line-height: 1.15;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.16));
+}
+
+.cs-event-card > h3 {
+  margin: 0 0 7px;
+  color: var(--cs-ink);
+  font-family: var(--cs-serif);
+  font-size: clamp(24px, 2.4vw, 29px);
+  font-weight: 600;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.cs-event-japanese {
+  margin: 0 0 12px;
+  color: #817362;
+  font-family: var(--cs-japanese);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.cs-event-card > p:not(.cs-samurai-lore) {
+  margin: 0 0 12px;
+  color: #55534d;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.cs-event-card > .cs-samurai-lore {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 0 14px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(66, 54, 41, 0.1);
+  color: #8a604f;
+  font-family: var(--cs-serif);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.cs-event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin: auto 0 12px;
+  padding-top: 12px;
+}
+
+.cs-event-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 7px;
+  border: 1px solid rgba(66, 54, 41, 0.13);
+  color: #6e665b;
+  background: rgba(255, 255, 255, 0.28);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.cs-event-meta span:nth-child(2) {
+  border-color: rgba(164, 59, 50, 0.2);
+  color: var(--cs-cinnabar-dark);
+  background: rgba(164, 59, 50, 0.055);
+  font-weight: 700;
+}
+
+.cs-event-source {
+  margin: 0 0 12px;
+  color: #81786b;
+  font-size: 10px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.cs-event-source a {
+  color: var(--cs-cinnabar-dark);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.cs-event-source a:hover {
+  text-decoration: underline;
+}
+
+.cs-event-card > .cs-icon-button {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding: 9px 11px;
+  border: 1px solid rgba(66, 54, 41, 0.15);
+  border-radius: 3px;
+  color: #5f594e;
+  background: rgba(70, 55, 34, 0.035);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.cs-event-card > .cs-icon-button:hover {
+  border-color: rgba(164, 59, 50, 0.38);
+  color: var(--cs-cinnabar-dark);
+  background: rgba(164, 59, 50, 0.05);
+}
+
+.cs-event-card > .cs-icon-button > svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+.cs-event-card > .cs-icon-button .watched-icon {
+  color: var(--cs-cinnabar);
+}
+
+.cs-event-card > .cs-icon-button .unwatched-icon {
+  color: #8b806e;
+}
+
+.cs-event-card > .cs-icon-button strong {
+  min-width: 0;
+  color: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Footer */
+.cs-footer {
+  width: 100%;
+  max-width: 1100px;
+  margin: 48px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--cs-border);
+  color: #777064;
+}
+
+.cs-footer p {
+  max-width: 850px;
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+/* Responsive layout */
+@media (min-width: 1400px) {
+  .cs-container {
+    padding-right: max(64px, calc((100vw - 1280px) / 2));
+    padding-left: max(64px, calc((100vw - 1280px) / 2));
+  }
+}
+
+@media (max-width: 900px) {
+  .cs-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cs-events-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cs-event-card > h3 {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cs-container {
+    padding: 24px 13px;
+  }
+
+  .cs-header {
+    margin-bottom: 29px;
+  }
+
+  .cs-header h1 {
+    font-size: clamp(39px, 11vw, 56px);
+  }
+
+  .cs-header p {
+    font-size: 17px;
+  }
+
+  .cs-moon-summary {
+    margin-bottom: 34px;
+    padding: 27px 20px;
+  }
+
+  .cs-moon-summary::after {
+    top: 35px;
+    right: 14px;
+    width: 95px;
+    transform: none;
+  }
+
+  .cs-moon-summary h2 {
+    max-width: 72%;
+    font-size: 37px;
+  }
+
+  .cs-moon-summary h3 {
+    max-width: 80%;
+    margin-bottom: 18px;
+    font-size: 10px;
+  }
+
+  .cs-moon-summary > p {
+    font-size: 11px;
+  }
+
+  .cs-moon-summary > p strong {
+    font-size: 19px;
+  }
+
+  .cs-controls > h2 {
+    font-size: 36px;
+  }
+
+  .cs-controls > button {
+    margin-right: 5px;
+    padding: 8px 9px;
+    font-size: 10px;
+  }
+
+  .cs-filters {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .cs-view-toggles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .cs-view-toggles button {
+    padding: 8px 4px;
+    font-size: 10px;
+  }
+
+  .cs-calendar-view {
+    padding: 9px;
+  }
+
+  .cs-calendar-day {
+    min-height: 49px;
+    gap: 4px;
+    padding: 5px 4px;
+  }
+
+  .cs-calendar-day-header {
+    font-size: 9px;
+  }
+
+  .cs-calendar-day > span:first-child {
+    font-size: 15px;
+  }
+
+  .cs-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .cs-day-indicators {
+    gap: 3px;
+  }
+
+  .cs-event-card {
+    padding: 15px 13px;
+  }
+
+  .cs-event-card > .cs-moon {
+    min-height: 62px;
+    font-size: 3.25rem !important;
+  }
+
+  .cs-event-card > h3 {
+    font-size: 25px;
+  }
+
+  .cs-event-card > p:not(.cs-samurai-lore) {
+    font-size: 11px;
+  }
+
+  .cs-event-card > .cs-icon-button strong {
+    font-size: 9px;
+  }
+
+  .cs-footer {
+    margin-top: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-container *,
+  .cs-container *::before,
+  .cs-container *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark theme overrides and moon summary layout tweaks */
+:root {
+  --cs-ink: #f4eee4;
+  --cs-ink-soft: #cbc5bb;
+  --cs-paper: #10131b;
+  --cs-paper-light: #252a35;
+  --cs-paper-dark: #1a1e28;
+  --cs-cinnabar: #d27a70;
+  --cs-cinnabar-dark: #f0b0a6;
+  --cs-gold: #d8b777;
+  --cs-border: rgba(235, 225, 205, 0.17);
+  --cs-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+}
+
+.cs-container {
+  color: #f4eee4;
+  background:
+    radial-gradient(ellipse at 12% 7%, rgba(87, 105, 145, 0.16), transparent 32%),
+    radial-gradient(ellipse at 91% 26%, rgba(164, 59, 50, 0.12), transparent 29%),
+    #10131b;
+}
+
+.cs-header p,
+.cs-controls > p,
+.cs-filters label,
+.cs-calendar-day-header,
+.cs-day-indicators,
+.cs-calendar-view > p,
+.cs-events-list > p,
+.cs-events-list > p strong,
+.cs-event-japanese,
+.cs-event-card > p:not(.cs-samurai-lore),
+.cs-event-card > .cs-samurai-lore,
+.cs-event-meta span,
+.cs-event-source,
+.cs-footer {
+  color: #d0c9bd;
+}
+
+.cs-header > button,
+.cs-controls > button,
+.cs-filters > button,
+.cs-calendar-header button {
+  border-color: rgba(235, 225, 205, 0.2);
+  color: #f4eee4;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.cs-header > button:hover,
+.cs-controls > button:hover,
+.cs-filters > button:hover,
+.cs-calendar-header button:hover {
+  border-color: var(--cs-cinnabar);
+  color: #fff5eb;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cs-filters,
+.cs-calendar-view {
+  border-color: var(--cs-border);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.cs-filters select,
+.cs-filters input[type='date'] {
+  border-color: rgba(235, 225, 205, 0.2);
+  color: #f4eee4;
+  background: #1c202b;
+  color-scheme: dark;
+}
+
+.cs-view-toggles {
+  border-bottom-color: var(--cs-border);
+}
+
+.cs-view-toggles button {
+  color: #c8c0b3;
+}
+
+.cs-view-toggles button:hover,
+.cs-view-toggles button:focus-visible {
+  color: #f0b0a6;
+}
+
+.cs-calendar-day {
+  border-top-color: rgba(235, 225, 205, 0.12);
+  border-right-color: rgba(235, 225, 205, 0.08);
+  color: #f4eee4;
+}
+
+.cs-calendar-day:hover:not(.blank) {
+  background: rgba(210, 122, 112, 0.12);
+}
+
+.cs-calendar-day.selected {
+  background: rgba(210, 122, 112, 0.16);
+}
+
+.cs-day-indicators {
+  color: #d0c9bd;
+}
+
+.cs-events-list > p {
+  border-color: var(--cs-border);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.cs-event-card {
+  border-color: var(--cs-border);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+}
+
+.cs-event-card:hover {
+  border-color: rgba(210, 122, 112, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+}
+
+.cs-event-card > h3 {
+  color: #f4eee4;
+}
+
+.cs-event-japanese {
+  color: #d7c39d;
+}
+
+.cs-event-card > p:not(.cs-samurai-lore) {
+  color: #d0c9bd;
+}
+
+.cs-event-card > .cs-samurai-lore {
+  border-top-color: rgba(235, 225, 205, 0.13);
+  color: #e1b5a0;
+}
+
+.cs-event-meta span {
+  border-color: rgba(235, 225, 205, 0.16);
+  color: #d0c9bd;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.cs-event-meta span:nth-child(2) {
+  border-color: rgba(210, 122, 112, 0.3);
+  color: #ffc1b6;
+  background: rgba(210, 122, 112, 0.1);
+}
+
+.cs-event-source {
+  color: #bcb5aa;
+}
+
+.cs-event-source a {
+  color: #f0b0a6;
+}
+
+.cs-event-card > .cs-icon-button {
+  border-color: rgba(235, 225, 205, 0.17);
+  color: #e1d8cb;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.cs-event-card > .cs-icon-button:hover {
+  border-color: rgba(210, 122, 112, 0.48);
+  color: #fff0e6;
+  background: rgba(210, 122, 112, 0.12);
+}
+
+.cs-event-card > .cs-icon-button .unwatched-icon {
+  color: #d8c6a4;
+}
+
+.cs-footer {
+  border-top-color: var(--cs-border);
+  color: #bcb5aa;
+}
+
+.cs-moon-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.7fr);
+  align-items: center;
+  column-gap: clamp(20px, 5vw, 64px);
+}
+
+.cs-moon-summary > h2,
+.cs-moon-summary > h3,
+.cs-moon-summary > p,
+.cs-moon-summary > .cs-samurai-directive {
+  grid-column: 1;
+}
+
+.cs-moon-summary > h2 {
+  max-width: none;
+  color: #f4eee4;
+}
+
+.cs-moon-summary > h3 {
+  max-width: none;
+  color: #d6c6a4;
+}
+
+.cs-moon-summary > p {
+  color: #d0c9bd;
+}
+
+.cs-moon-summary > p strong {
+  color: #fff4e5;
+}
+
+.cs-moon-summary > .cs-samurai-directive {
+  max-width: none;
+}
+
+.cs-moon-summary > .cs-moon {
+  grid-column: 2;
+  grid-row: 1 / span 6;
+  align-self: center;
+  justify-self: center;
+  z-index: 1;
+  min-height: 0 !important;
+  margin: 0 !important;
+  font-size: clamp(8rem, 17vw, 13rem) !important;
+  line-height: 1;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5));
+  text-shadow: 0 0 24px rgba(216, 183, 119, 0.16) !important;
+}
+
+.cs-moon-summary::after {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .cs-moon-summary {
+    grid-template-columns: minmax(0, 1fr) minmax(95px, 0.48fr);
+    column-gap: 10px;
+  }
+
+  .cs-moon-summary h2 {
+    max-width: none;
+    font-size: clamp(29px, 7vw, 37px);
+  }
+
+  .cs-moon-summary h3 {
+    max-width: none;
+  }
+
+  .cs-moon-summary > .cs-moon {
+    font-size: clamp(5rem, 21vw, 7.5rem) !important;
+  }
+}
