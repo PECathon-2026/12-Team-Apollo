@@ -237,6 +237,7 @@ export const Watchtower: React.FC = () => {
   // A failed nearby-place query does not prevent weather from displaying.
   useEffect(() => {
     if (!selectedPlace) return;
+    const currentPlace = selectedPlace;
 
     const controller = new AbortController();
 
@@ -250,14 +251,14 @@ export const Watchtower: React.FC = () => {
       setSelectedTime("");
 
       const weatherPromise = getForecast(
-        selectedPlace.latitude,
-        selectedPlace.longitude,
+        currentPlace.latitude,
+        currentPlace.longitude,
         controller.signal
       );
 
       const spotsPromise = getNearbySpots(
-        selectedPlace.latitude,
-        selectedPlace.longitude,
+        currentPlace.latitude,
+        currentPlace.longitude,
         controller.signal
       );
 

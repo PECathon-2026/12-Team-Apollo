@@ -8,7 +8,7 @@ import { restoreRouter } from './routes/restore';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 5001;
 
 // Middleware
 app.use(cors());
@@ -36,8 +36,8 @@ app.get('/api/health', (_req: Request, res: Response) => {
 app.use('/api/iss', issRouter);
 app.use('/api/restore', restoreRouter);
 
-// Start server
-app.listen(PORT, () => {
+// Start server with port conflict handling
+const server = app.listen(PORT, () => {
   console.log(`
   ======================================================
      TSUKUYOMI WATCH API • 月読の監視バックエンド
@@ -48,5 +48,19 @@ app.listen(PORT, () => {
   - ISS predictions:  http://localhost:${PORT}/api/iss/passes
   - Image restore:    http://localhost:${PORT}/api/restore
   ======================================================
+  Frontend Web App:   http://localhost:5173
+  ======================================================
+  (Live dev server running - press Ctrl + C to stop)
   `);
+});
+
+server.on('error', (err: any) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`
+  ❌ [PORT CONFLICT] Port ${PORT} is already in use by another program.
+  Please check what is using port ${PORT} or specify PORT=5002 in .env.
+    `);
+  } else {
+    console.error('❌ [SERVER ERROR]', err);
+  }
 });
