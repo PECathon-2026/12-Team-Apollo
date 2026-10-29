@@ -1,7 +1,7 @@
 // src/features/spirit-lens/objectDetection.ts
 import { CelestialDetection } from '../../types';
 
-export const detectCelestialObjects = async (imageUrl: string): Promise<CelestialDetection[]> => {
+export const detectCelestialObjects = async (_imageUrl: string): Promise<CelestialDetection[]> => {
   // Simulating the time it takes for a computer vision model to process the image
   return new Promise((resolve) => {
     setTimeout(() => {

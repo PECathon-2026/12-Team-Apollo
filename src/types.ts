@@ -7,7 +7,7 @@
 // 1. Navigation & App Shell Types
 // ==========================================
 
-export type NavSectionId = 'watchtower' | 'scroll' | 'spirit-lens' | 'dojo';
+export type NavSectionId = 'dashboard' | 'watchtower' | 'scroll' | 'spirit-lens' | 'dojo';
 
 export interface NavSectionItem {
   id: NavSectionId;

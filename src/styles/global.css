@@ -277,3 +277,428 @@ p {
   background-color: var(--ink-750) !important;
   color: var(--gold-moon) !important;
 }
+
+/* ==========================================================
+   Celestial Command Dashboard Styles (本陣 - Honjin)
+   ========================================================== */
+
+.dashboard-root {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero Header */
+.dashboard-hero {
+  position: relative;
+  background: linear-gradient(145deg, rgba(20, 23, 34, 0.92), rgba(13, 15, 21, 0.98));
+  border: 1px solid rgba(229, 185, 89, 0.22);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sumi);
+}
+
+.dashboard-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vermilion), var(--gold-moon), var(--vermilion));
+}
+
+.dashboard-hero-watermark {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-serif);
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(229, 185, 89, 0.03);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.dashboard-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 860px;
+}
+
+.dashboard-hero-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.dashboard-hero-title {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--washi-white);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dashboard-hero-title .title-kanji {
+  color: var(--gold-moon);
+  font-size: 1.8rem;
+}
+
+.dashboard-hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--washi-silk);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.dashboard-hero-quote {
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--washi-muted);
+  border-left: 2px solid var(--gold-moon-dim);
+  padding-left: 14px;
+  margin-top: 12px;
+}
+
+/* KPI Telemetry Bar */
+.dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-kpi-card {
+  background: rgba(13, 15, 21, 0.8);
+  border: 1px solid rgba(229, 185, 89, 0.12);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-kpi-card:hover {
+  border-color: rgba(229, 185, 89, 0.3);
+  transform: translateY(-2px);
+}
+
+.dashboard-kpi-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard-kpi-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-kpi-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--washi-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+
+.dashboard-kpi-value {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold-moon-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-kpi-subtext {
+  font-size: 0.75rem;
+  color: var(--washi-dim);
+  margin-top: 2px;
+}
+
+/* Four Options Section */
+.dashboard-options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid rgba(229, 185, 89, 0.14);
+  padding-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dashboard-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-section-title h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-section-hint {
+  font-size: 0.82rem;
+  color: var(--washi-muted);
+}
+
+/* 4 Options Grid */
+.dashboard-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-options-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Single Option Card */
+.dashboard-option-card {
+  background: linear-gradient(155deg, rgba(20, 23, 34, 0.95), rgba(13, 15, 21, 0.98));
+  border: 1px solid rgba(229, 185, 89, 0.16);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+}
+
+.dashboard-option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--gold-moon));
+  opacity: 0.7;
+  transition: opacity 0.25s ease;
+}
+
+.dashboard-option-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-accent, var(--gold-moon-bright));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 16px var(--card-glow, var(--gold-glow));
+}
+
+.dashboard-option-card:hover::before {
+  opacity: 1;
+}
+
+/* Card Header */
+.dashboard-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.dashboard-option-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  background: rgba(13, 15, 21, 0.9);
+  border: 1px solid rgba(229, 185, 89, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease;
+}
+
+.dashboard-option-card:hover .dashboard-option-icon-box {
+  transform: scale(1.06);
+}
+
+.dashboard-option-index-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--washi-dim);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Card Body */
+.dashboard-option-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.dashboard-option-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--washi-white);
+  letter-spacing: 0.03em;
+}
+
+.dashboard-option-subtitle {
+  font-size: 0.82rem;
+  color: var(--gold-moon);
+  font-weight: 600;
+}
+
+.dashboard-option-desc {
+  font-size: 0.88rem;
+  color: var(--washi-silk);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+/* Card Tag Pills */
+.dashboard-option-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.dashboard-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: rgba(13, 15, 21, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  color: var(--washi-parchment);
+}
+
+/* Card Footer / Action Button */
+.dashboard-option-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 18px;
+  margin-top: auto;
+}
+
+.dashboard-option-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(229, 185, 89, 0.08);
+  border: 1px solid rgba(229, 185, 89, 0.3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gold-moon-bright);
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-option-card:hover .dashboard-option-action-btn {
+  background: linear-gradient(135deg, #e5b959, #b88f34);
+  color: var(--ink-950);
+  border-color: var(--gold-moon-bright);
+  box-shadow: 0 2px 14px var(--gold-glow);
+  transform: translateX(3px);
+}
+
+/* ==========================================================
+   Standalone Initial Dashboard View Styles
+   ========================================================== */
+
+.standalone-dashboard-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 24px 24px 60px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.standalone-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(229, 185, 89, 0.16);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.standalone-dashboard-footer {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(229, 185, 89, 0.12);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--gold-moon-dim);
+}
+
+.app-shell-wrapper {
+  min-height: 100vh;
+  width: 100%;
+}
