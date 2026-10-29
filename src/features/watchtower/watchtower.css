@@ -1,0 +1,258 @@
+
+.watchtower {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.watchtower p {
+  line-height: 1.6;
+}
+
+.watchtower .wt-search-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.watchtower .wt-search-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 12px 14px;
+  color: var(--washi-white);
+  background: rgba(13, 15, 21, 0.8);
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+  font: inherit;
+}
+
+.watchtower .wt-search-input:focus {
+  outline: 2px solid var(--gold-moon);
+  outline-offset: 2px;
+}
+
+.watchtower .wt-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  color: var(--gold-moon);
+  background: transparent;
+  border: 1px solid var(--gold-moon);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  cursor: pointer;
+}
+
+.watchtower .wt-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.watchtower .wt-button-primary {
+  color: #111;
+  background: var(--gold-moon);
+}
+
+.watchtower .wt-muted {
+  color: var(--washi-muted);
+  font-size: 0.88rem;
+}
+
+.watchtower .wt-error {
+  padding: 12px;
+  color: #ffb8b8;
+  background: rgba(214, 60, 60, 0.1);
+  border: 1px solid rgba(214, 60, 60, 0.45);
+  border-radius: var(--radius-sm);
+}
+
+.watchtower .wt-notice {
+  padding: 12px;
+  color: var(--washi-silk);
+  background: rgba(229, 185, 89, 0.07);
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+}
+
+.watchtower .wt-place-results {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.watchtower .wt-place-option {
+  padding: 12px;
+  text-align: left;
+  color: var(--washi-white);
+  background: rgba(13, 15, 21, 0.65);
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.watchtower .wt-place-option:hover {
+  border-color: var(--gold-moon);
+}
+
+.watchtower .wt-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 14px;
+}
+
+.watchtower .wt-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.watchtower .wt-metric-label {
+  color: var(--washi-muted);
+  font-size: 0.8rem;
+}
+
+.watchtower .wt-metric-value {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  overflow-wrap: anywhere;
+}
+
+.watchtower .wt-score-layout {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.watchtower .wt-score-circle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 120px;
+  width: 120px;
+  height: 120px;
+  border: 5px solid var(--gold-moon);
+  border-radius: 50%;
+  background: rgba(229, 185, 89, 0.07);
+  text-align: center;
+}
+
+.watchtower .wt-score-number {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-moon);
+}
+
+.watchtower .wt-score-caption {
+  color: var(--washi-muted);
+  font-size: 0.72rem;
+}
+
+.watchtower .wt-hour-select {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px;
+  color: var(--washi-white);
+  background: rgba(13, 15, 21, 0.8);
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+  font: inherit;
+}
+
+.watchtower .wt-hourly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 10px;
+}
+
+.watchtower .wt-hour-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 13px;
+  background: rgba(13, 15, 21, 0.6);
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+}
+
+.watchtower .wt-hour-card-selected {
+  border-color: var(--gold-moon);
+  background: rgba(229, 185, 89, 0.07);
+}
+
+.watchtower .wt-map {
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: #171a22;
+}
+
+.watchtower .wt-spot-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.watchtower .wt-spot {
+  padding: 12px;
+  border: 1px solid var(--border-delicate);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+}
+
+.watchtower .wt-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: wt-spin 0.8s linear infinite;
+}
+
+@keyframes wt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.iss-custom-marker {
+  background: transparent;
+  border: none;
+}
+
+@media (max-width: 600px) {
+  .watchtower {
+    gap: 16px;
+  }
+
+  .watchtower .wt-search-form {
+    flex-direction: column;
+  }
+
+  .watchtower .wt-search-input {
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .watchtower .wt-button {
+    width: 100%;
+  }
+
+  .watchtower .wt-map {
+    height: 320px;
+  }
+
+  .watchtower .wt-score-circle {
+    flex-basis: 100px;
+    width: 100px;
+    height: 100px;
+  }
+}

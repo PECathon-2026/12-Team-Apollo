@@ -1,28 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import {
+  LayoutDashboard,
   Satellite,
   Scroll,
   Scan,
   Sword,
   Moon,
   Clock,
-  Radio,
   Menu,
   X,
 } from 'lucide-react';
 import { NavSectionId, NavSectionItem } from '../types';
-import { Watchtower } from '../features/watchtower/Watchtower';
-import { CelestialScroll } from '../features/scroll/CelestialScroll';
-import { SpiritLens } from '../features/spirit-lens/SpiritLens';
-import { DojoDashboard } from '../features/dojo/DojoDashboard';
 
-export const AppShell: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<NavSectionId>('watchtower');
+interface AppShellProps {
+  activeView: NavSectionId;
+  onViewChange: (view: NavSectionId) => void;
+  children: React.ReactNode;
+}
+
+export const AppShell: React.FC<AppShellProps> = ({
+  activeView,
+  onViewChange,
+  children,
+}) => {
+  const [activeSection, setActiveSection] = useState<NavSectionId>(activeView);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'standby'>('checking');
   const [currentTimeJST, setCurrentTimeJST] = useState<string>('');
 
+  // Sync navigation with parent state
+  useEffect(() => {
+    setActiveSection(activeView);
+  }, [activeView]);
+
   const navItems: NavSectionItem[] = [
+    {
+      id: 'dashboard',
+      label: '← Dashboard',
+      labelJapanese: '本陣',
+      romaji: 'Honjin',
+      subtitle: 'Command Hub',
+      description: 'Return to the central celestial command hub',
+      iconName: 'LayoutDashboard',
+    },
     {
       id: 'watchtower',
       label: 'Watchtower',
@@ -63,30 +83,37 @@ export const AppShell: React.FC = () => {
 
   // Check backend health
   useEffect(() => {
+    let mounted = true;
+
     const checkServer = async () => {
       try {
         const res = await fetch('/api/health');
-        if (res.ok) {
-          setBackendStatus('online');
-        } else {
-          setBackendStatus('standby');
+        if (mounted) {
+          setBackendStatus(res.ok ? 'online' : 'standby');
         }
       } catch {
-        setBackendStatus('standby');
+        if (mounted) {
+          setBackendStatus('standby');
+        }
       }
     };
 
-    checkServer();
-    const interval = setInterval(checkServer, 20000);
-    return () => clearInterval(interval);
+    void checkServer();
+    const interval = setInterval(() => {
+      void checkServer();
+    }, 20000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
-  // Update clock
+  // Update Japan Standard Time clock
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date();
       setCurrentTimeJST(
-        now.toLocaleTimeString('ja-JP', {
+        new Date().toLocaleTimeString('ja-JP', {
           timeZone: 'Asia/Tokyo',
           hour12: false,
           hour: '2-digit',
@@ -95,29 +122,17 @@ export const AppShell: React.FC = () => {
         })
       );
     };
+
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const renderActiveFeature = () => {
-    switch (activeSection) {
-      case 'watchtower':
-        return <Watchtower />;
-      case 'scroll':
-        return <CelestialScroll />;
-      case 'spirit-lens':
-        return <SpiritLens />;
-      case 'dojo':
-        return <DojoDashboard />;
-      default:
-        return <Watchtower />;
-    }
-  };
-
-  const getIcon = (id: NavSectionId, isSelected: boolean) => {
+  const getIcon = (id: NavSectionId, isSelected: boolean): React.ReactNode => {
     const color = isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-muted)';
     switch (id) {
+      case 'dashboard':
+        return <LayoutDashboard size={18} color={color} />;
       case 'watchtower':
         return <Satellite size={18} color={color} />;
       case 'scroll':
@@ -126,18 +141,32 @@ export const AppShell: React.FC = () => {
         return <Scan size={18} color={color} />;
       case 'dojo':
         return <Sword size={18} color={color} />;
+      default:
+        return null;
     }
   };
 
+  const handleNavigation = (view: NavSectionId) => {
+    setActiveSection(view);
+    onViewChange(view);
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* Top Header */}
       <header
         style={{
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          backgroundColor: 'rgba(7, 8, 11, 0.92)',
+          backgroundColor: 'rgba(7, 8, 11, 0.94)',
           backdropFilter: 'blur(16px)',
           borderBottom: '1px solid rgba(229, 185, 89, 0.16)',
           height: 'var(--header-height)',
@@ -147,8 +176,18 @@ export const AppShell: React.FC = () => {
           padding: '0 24px',
         }}
       >
-        {/* Brand / Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Brand / Logo - Clickable to return to Dashboard */}
+        <div
+          onClick={() => handleNavigation('dashboard')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            cursor: 'pointer',
+            userSelect: 'none',
+          }}
+          title="Return to Dashboard (本陣へ戻る)"
+        >
           <div
             style={{
               width: '42px',
@@ -160,12 +199,20 @@ export const AppShell: React.FC = () => {
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 0 16px var(--gold-glow)',
+              transition: 'transform 0.2s ease',
             }}
           >
             <Moon size={22} color="var(--gold-moon-bright)" />
           </div>
+
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
               <span
                 style={{
                   fontFamily: 'var(--font-serif)',
@@ -181,129 +228,177 @@ export const AppShell: React.FC = () => {
                 月読の監視
               </span>
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--washi-muted)', letterSpacing: '0.04em' }}>
+
+            <div
+              style={{
+                fontSize: '0.72rem',
+                color: 'var(--washi-muted)',
+                letterSpacing: '0.04em',
+              }}
+            >
               Samurai Celestial Guide & Astrophotography Suite
             </div>
           </div>
         </div>
 
-        {/* Center / Desktop Navigation Tabs */}
+        {/* Desktop Navigation */}
         <nav
+          className="desktop-nav"
           style={{
             display: 'none',
+            alignItems: 'center',
             gap: '6px',
-            background: 'rgba(20, 23, 34, 0.7)',
+            background: 'rgba(13, 15, 21, 0.65)',
             padding: '4px',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-ink)',
+            border: '1px solid rgba(229, 185, 89, 0.12)',
           }}
-          className="desktop-nav"
         >
           {navItems.map((item) => {
             const isSelected = activeSection === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => handleNavigation(item.id)}
+                aria-current={isSelected ? 'page' : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  padding: '8px 16px',
+                  padding: '8px 14px',
                   borderRadius: 'var(--radius-sm)',
                   backgroundColor: isSelected ? 'rgba(229, 185, 89, 0.15)' : 'transparent',
-                  border: isSelected ? '1px solid var(--gold-moon)' : '1px solid transparent',
-                  color: isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-muted)',
-                  cursor: 'pointer',
+                  border: isSelected ? '1px solid var(--gold-border)' : '1px solid transparent',
+                  color: isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-silk)',
                   fontFamily: 'var(--font-serif)',
                   fontSize: '0.86rem',
                   fontWeight: isSelected ? 700 : 500,
+                  cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
               >
                 {getIcon(item.id, isSelected)}
                 <span>{item.label}</span>
-                <span style={{ fontSize: '0.72rem', opacity: 0.75 }}>[{item.labelJapanese}]</span>
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    color: isSelected ? 'var(--gold-moon)' : 'var(--washi-muted)',
+                    marginLeft: '2px',
+                  }}
+                >
+                  {item.labelJapanese}
+                </span>
               </button>
             );
           })}
         </nav>
 
-        {/* Right Status / Telemetry Badges */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Real-time Clock */}
+        {/* Status Indicators & Mobile Menu Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* JST Clock */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.8rem',
+              fontSize: '0.82rem',
               color: 'var(--washi-silk)',
-              padding: '4px 10px',
+              background: 'rgba(13, 15, 21, 0.7)',
+              padding: '6px 10px',
               borderRadius: 'var(--radius-sm)',
-              background: 'rgba(13, 15, 21, 0.6)',
               border: '1px solid var(--border-ink)',
             }}
           >
             <Clock size={14} color="var(--gold-moon)" />
-            <span>{currentTimeJST || '00:00:00'} JST</span>
+            <span>{currentTimeJST || '00:00:00'}</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>JST</span>
           </div>
 
-          {/* Backend Connection Indicator */}
+          {/* Backend Status Dot */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              fontSize: '0.75rem',
-              color: backendStatus === 'online' ? '#85e3a8' : 'var(--washi-muted)',
+              fontSize: '0.78rem',
+              color: 'var(--washi-silk)',
             }}
+            title={
+              backendStatus === 'online'
+                ? 'Telemetry Backend connected'
+                : 'Using simulated fallback telemetry'
+            }
           >
-            <Radio size={14} color={backendStatus === 'online' ? '#55f58c' : '#a89d8d'} />
-            <span style={{ display: 'none' }} className="status-label">
-              {backendStatus === 'online' ? 'API Online' : 'API Standby'}
+            <div
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor:
+                  backendStatus === 'online'
+                    ? '#4e9b72'
+                    : backendStatus === 'standby'
+                    ? '#d63c3c'
+                    : 'var(--gold-moon)',
+                boxShadow:
+                  backendStatus === 'online'
+                    ? '0 0 8px rgba(78, 155, 114, 0.6)'
+                    : '0 0 8px rgba(214, 60, 60, 0.6)',
+              }}
+            />
+            <span
+              className="status-label"
+              style={{
+                display: 'none',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.75rem',
+                color: 'var(--washi-muted)',
+              }}
+            >
+              {backendStatus === 'online' ? 'LINK OK' : 'LOCAL'}
             </span>
           </div>
 
           {/* Mobile Menu Button */}
           <button
+            className="mobile-nav-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '36px',
-              height: '36px',
-              backgroundColor: 'rgba(20, 23, 34, 0.8)',
-              border: '1px solid var(--gold-border)',
+              background: 'transparent',
+              border: '1px solid var(--border-ink)',
               borderRadius: 'var(--radius-sm)',
+              padding: '8px',
               color: 'var(--washi-white)',
               cursor: 'pointer',
             }}
-            className="mobile-nav-toggle"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div
+        <nav
           style={{
             position: 'fixed',
             top: 'var(--header-height)',
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(7, 8, 11, 0.96)',
+            backgroundColor: 'rgba(7, 8, 11, 0.98)',
             backdropFilter: 'blur(20px)',
             zIndex: 99,
-            padding: '24px',
             display: 'flex',
             flexDirection: 'column',
+            padding: '24px',
             gap: '12px',
+            overflowY: 'auto',
           }}
         >
           {navItems.map((item) => {
@@ -311,10 +406,8 @@ export const AppShell: React.FC = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => {
-                  setActiveSection(item.id);
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => handleNavigation(item.id)}
+                aria-current={isSelected ? 'page' : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -335,14 +428,16 @@ export const AppShell: React.FC = () => {
                   {getIcon(item.id, isSelected)}
                   <div>
                     <div>{item.label}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--washi-muted)' }}>{item.subtitle}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--washi-muted)' }}>
+                      {item.subtitle}
+                    </div>
                   </div>
                 </div>
                 <span className="hanko-seal">{item.labelJapanese}</span>
               </button>
             );
           })}
-        </div>
+        </nav>
       )}
 
       {/* Main Content Area */}
@@ -353,16 +448,17 @@ export const AppShell: React.FC = () => {
           maxWidth: 'var(--max-content-width)',
           margin: '0 auto',
           padding: '28px 24px 60px 24px',
+          boxSizing: 'border-box',
         }}
       >
-        {renderActiveFeature()}
+        {children}
       </main>
 
       {/* Footer */}
       <footer
         style={{
           borderTop: '1px solid rgba(229, 185, 89, 0.12)',
-          backgroundColor: 'var(--ink-950)',
+          backgroundColor: 'rgba(7, 8, 11, 0.9)',
           padding: '28px 24px',
           marginTop: 'auto',
         }}
@@ -383,14 +479,24 @@ export const AppShell: React.FC = () => {
               fontFamily: 'var(--font-serif)',
               fontStyle: 'italic',
               fontSize: '0.88rem',
-              color: 'var(--washi-parchment)',
+              color: 'var(--gold-moon-dim)',
               letterSpacing: '0.04em',
             }}
           >
             "Even in the deepest shadow, the celestial moon cuts the darkness like a blade."
           </div>
-          <div style={{ display: 'flex', gap: '16px', fontSize: '0.78rem', color: 'var(--washi-muted)' }}>
-            <span>Tsukuyomi Watch v0.1.0 • Hackathon Prototype</span>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '16px',
+              fontSize: '0.78rem',
+              color: 'var(--washi-muted)',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            <span>Tsukuyomi Watch v0.1.0 • Celestial Command Deck</span>
             <span>•</span>
             <span>React + TypeScript + Vite + Express</span>
           </div>
@@ -399,7 +505,7 @@ export const AppShell: React.FC = () => {
 
       {/* Responsive Inline CSS overrides for navigation breakpoints */}
       <style>{`
-        @media (min-width: 860px) {
+        @media (min-width: 960px) {
           .desktop-nav {
             display: flex !important;
           }
@@ -409,18 +515,6 @@ export const AppShell: React.FC = () => {
           .status-label {
             display: inline !important;
           }
-        }
-        @keyframes pulse {
-          0% { transform: scale(0.9); opacity: 0.8; }
-          50% { transform: scale(1.4); opacity: 0.2; }
-          100% { transform: scale(0.9); opacity: 0.8; }
-        }
-        .spin-animation {
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
