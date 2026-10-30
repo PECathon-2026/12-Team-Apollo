@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { issRouter } from './routes/iss';
 import { restoreRouter } from './routes/restore';
 import { newsRouter } from './routes/news';
+import { spotsRouter } from './routes/spots';
 
 // Load environment configuration
 dotenv.config();
@@ -37,6 +38,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 app.use('/api/iss', issRouter);
 app.use('/api/restore', restoreRouter);
 app.use('/api/news', newsRouter);
+app.use('/api/spots', spotsRouter);
 
 // Start server with port conflict handling
 const server = app.listen(PORT, '0.0.0.0', () => {

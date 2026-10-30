@@ -4,10 +4,50 @@
   flex-direction: column;
   gap: 24px;
   min-width: 0;
+  color: var(--washi-white);
+  font-family: var(--font-sans);
 }
 
 .watchtower p {
   line-height: 1.6;
+}
+
+/* Quick Observatories Bar */
+.wt-quick-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.wt-quick-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gold-moon);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.wt-quick-pill {
+  background: rgba(13, 15, 21, 0.7);
+  border: 1px solid var(--border-ink);
+  color: var(--washi-silk);
+  font-size: 0.78rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wt-quick-pill:hover,
+.wt-quick-pill.active {
+  border-color: var(--gold-border);
+  color: var(--gold-moon-bright);
+  background: rgba(229, 193, 88, 0.14);
 }
 
 .watchtower .wt-search-form {
@@ -22,7 +62,7 @@
   min-width: 180px;
   padding: 12px 14px;
   color: var(--washi-white);
-  background: rgba(13, 15, 21, 0.8);
+  background: rgba(13, 15, 21, 0.85);
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-sm);
   font: inherit;
@@ -38,13 +78,20 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px 14px;
+  padding: 11px 16px;
   color: var(--gold-moon);
-  background: transparent;
+  background: rgba(13, 15, 21, 0.85);
   border: 1px solid var(--gold-moon);
   border-radius: var(--radius-sm);
   font: inherit;
+  font-size: 0.88rem;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.watchtower .wt-button:hover:not(:disabled) {
+  background: rgba(229, 193, 88, 0.16);
+  color: var(--gold-moon-bright);
 }
 
 .watchtower .wt-button:disabled {
@@ -53,8 +100,14 @@
 }
 
 .watchtower .wt-button-primary {
-  color: #111;
+  color: #0b0c10;
   background: var(--gold-moon);
+  font-weight: 600;
+}
+
+.watchtower .wt-button-primary:hover:not(:disabled) {
+  background: var(--gold-moon-bright);
+  box-shadow: 0 0 16px var(--gold-glow);
 }
 
 .watchtower .wt-muted {
@@ -65,7 +118,7 @@
 .watchtower .wt-error {
   padding: 12px;
   color: #ffb8b8;
-  background: rgba(214, 60, 60, 0.1);
+  background: rgba(214, 60, 60, 0.12);
   border: 1px solid rgba(214, 60, 60, 0.45);
   border-radius: var(--radius-sm);
 }
@@ -73,7 +126,7 @@
 .watchtower .wt-notice {
   padding: 12px;
   color: var(--washi-silk);
-  background: rgba(229, 185, 89, 0.07);
+  background: rgba(229, 185, 89, 0.08);
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
@@ -97,6 +150,7 @@
 
 .watchtower .wt-place-option:hover {
   border-color: var(--gold-moon);
+  background: rgba(229, 193, 88, 0.08);
 }
 
 .watchtower .wt-metrics {
@@ -179,32 +233,512 @@
   background: rgba(13, 15, 21, 0.6);
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.watchtower .wt-hour-card:hover {
+  border-color: var(--gold-border);
 }
 
 .watchtower .wt-hour-card-selected {
   border-color: var(--gold-moon);
-  background: rgba(229, 185, 89, 0.07);
+  background: rgba(229, 185, 89, 0.12);
+  box-shadow: 0 0 12px rgba(229, 185, 89, 0.2);
+}
+
+/* ========================================================
+   JAPANESE MAKIMONO SCROLL GUI FOR OBSERVING MAP
+   ======================================================== */
+
+.wt-scroll-container {
+  position: relative;
+  margin: 16px 0 28px;
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.65));
+}
+
+/* 1. Scroll Wooden Spindle Rods (Top and Bottom) */
+.wt-scroll-rod {
+  position: relative;
+  height: 22px;
+  background: linear-gradient(180deg, #3d2314 0%, #1a0f08 45%, #2c1a0e 75%, #0f0805 100%);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 215, 0, 0.25);
+  z-index: 10;
+}
+
+.wt-scroll-rod.top {
+  margin-bottom: -4px;
+}
+
+.wt-scroll-rod.bottom {
+  margin-top: -4px;
+}
+
+/* Ornamental Gold Finials (Jikutō 軸先) */
+.wt-scroll-cap {
+  width: 28px;
+  height: 30px;
+  background: radial-gradient(circle at 40% 35%, #ffeaa7 0%, #d4af37 55%, #8c7324 100%);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  position: relative;
+}
+
+.wt-scroll-cap.left {
+  margin-left: -12px;
+}
+
+.wt-scroll-cap.right {
+  margin-right: -12px;
+}
+
+/* Braided Silk Cord (Kakeo) hanging from top rod */
+.wt-scroll-cord-wrap {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.wt-scroll-cord-ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-moon-bright);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.wt-scroll-cord-tassel {
+  width: 2px;
+  height: 12px;
+  background: var(--vermilion-bright);
+}
+
+/* Hanging Silk Weights (Fūchin 風鎮) at bottom rod */
+.wt-scroll-fuchin {
+  position: absolute;
+  bottom: -24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.wt-scroll-fuchin.left {
+  left: 14px;
+}
+
+.wt-scroll-fuchin.right {
+  right: 14px;
+}
+
+.wt-fuchin-cord {
+  width: 2px;
+  height: 14px;
+  background: var(--vermilion);
+}
+
+.wt-fuchin-bead {
+  width: 12px;
+  height: 14px;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, #4e9b72 60%, #1f422e 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* 2. Scroll Silk Brocade (Ichimonji 一文字) */
+.wt-scroll-brocade {
+  background: linear-gradient(180deg, #181b24 0%, #0d0f14 100%);
+  border-left: 2px solid rgba(229, 193, 88, 0.4);
+  border-right: 2px solid rgba(229, 193, 88, 0.4);
+  padding: 12px 18px;
+  position: relative;
+  z-index: 5;
+}
+
+.wt-scroll-brocade.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 2px solid var(--gold-border);
+}
+
+.wt-scroll-brocade.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: 2px solid var(--gold-border);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--washi-muted);
+}
+
+.wt-scroll-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wt-scroll-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--washi-white);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.wt-scroll-subtitle {
+  font-size: 0.75rem;
+  color: var(--gold-moon);
+  font-family: var(--font-mono);
+}
+
+.wt-scroll-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wt-tile-toggle {
+  background: rgba(7, 8, 11, 0.8);
+  border: 1px solid var(--border-ink);
+  color: var(--washi-silk);
+  font-size: 0.74rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.wt-tile-toggle:hover {
+  border-color: var(--gold-border);
+  color: var(--gold-moon-bright);
+}
+
+/* 3. Scroll Silk Canvas Window (Map Body) */
+.wt-scroll-canvas {
+  position: relative;
+  background: #0d0f14;
+  border-left: 2px solid rgba(229, 193, 88, 0.4);
+  border-right: 2px solid rgba(229, 193, 88, 0.4);
+  overflow: hidden;
+}
+
+/* Subtle parchment curled edge shadow */
+.wt-scroll-canvas::before,
+.wt-scroll-canvas::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.wt-scroll-canvas::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
+}
+
+.wt-scroll-canvas::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
 }
 
 .watchtower .wt-map {
   width: 100%;
-  height: 420px;
-  overflow: hidden;
-  border-radius: var(--radius-md);
-  background: #171a22;
+  height: 480px;
+  background: #090a0f;
 }
 
-.watchtower .wt-spot-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 16px;
+/* Custom Leaflet Map styling in scroll */
+.watchtower .leaflet-container {
+  font-family: var(--font-sans);
+  background: #090a0f !important;
 }
 
-.watchtower .wt-spot {
-  padding: 12px;
-  border: 1px solid var(--border-delicate);
+.watchtower .leaflet-popup-content-wrapper {
+  background: rgba(13, 15, 21, 0.95) !important;
+  color: var(--washi-white) !important;
+  border: 1px solid var(--gold-border);
   border-radius: var(--radius-sm);
-  overflow-wrap: anywhere;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+}
+
+.watchtower .leaflet-popup-tip {
+  background: rgba(13, 15, 21, 0.95) !important;
+  border: 1px solid var(--gold-border);
+}
+
+.watchtower .leaflet-popup-content {
+  margin: 12px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.watchtower .leaflet-popup-content a {
+  color: var(--gold-moon) !important;
+  text-decoration: underline;
+}
+
+.iss-custom-marker {
+  background: transparent;
+  border: none;
+}
+
+/* Pulsating Citadel Marker */
+.wt-citadel-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--vermilion-bright);
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 16px var(--vermilion), 0 0 24px var(--gold-glow);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wt-citadel-pin::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--vermilion-bright);
+  animation: citadelPulse 2s infinite ease-out;
+}
+
+@keyframes citadelPulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* Spot Pins */
+.wt-spot-pin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.wt-spot-pin:hover {
+  transform: scale(1.3);
+}
+
+.wt-spot-pin.bortle-dark {
+  background: #ffd700;
+  box-shadow: 0 0 12px #ffd700;
+}
+
+.wt-spot-pin.bortle-rural {
+  background: #55f58c;
+  box-shadow: 0 0 12px #55f58c;
+}
+
+.wt-spot-pin.bortle-suburban {
+  background: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+/* ========================================================
+   NEARBY OBSERVING SUGGESTIONS OVERHAUL
+   ======================================================== */
+
+.wt-suggestions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wt-suggestions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wt-suggestions-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wt-spot-filter-chip {
+  background: rgba(13, 15, 21, 0.7);
+  border: 1px solid var(--border-ink);
+  color: var(--washi-muted);
+  font-size: 0.76rem;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wt-spot-filter-chip:hover,
+.wt-spot-filter-chip.active {
+  border-color: var(--gold-border);
+  color: var(--gold-moon-bright);
+  background: rgba(229, 193, 88, 0.12);
+}
+
+.wt-spots-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 14px;
+}
+
+.wt-spot-card {
+  background: rgba(13, 15, 21, 0.8);
+  border: 1px solid var(--border-ink);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sumi);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.wt-spot-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 14px rgba(229, 193, 88, 0.12);
+}
+
+.wt-spot-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wt-spot-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--washi-white);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.wt-spot-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wt-bortle-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.wt-bortle-badge.dark {
+  background: rgba(255, 215, 0, 0.18);
+  border: 1px solid rgba(255, 215, 0, 0.45);
+  color: #ffd700;
+}
+
+.wt-bortle-badge.rural {
+  background: rgba(85, 245, 140, 0.16);
+  border: 1px solid rgba(85, 245, 140, 0.4);
+  color: #55f58c;
+}
+
+.wt-bortle-badge.suburban {
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+
+.wt-spot-type-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--washi-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.wt-spot-telemetry-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--washi-silk);
+  flex-wrap: wrap;
+}
+
+.wt-spot-tip {
+  background: rgba(7, 8, 11, 0.6);
+  border-left: 2px solid var(--gold-moon);
+  padding: 8px 10px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.8rem;
+  color: var(--washi-silk);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.wt-spot-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-ink);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+.wt-spot-locate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--border-ink);
+  color: var(--gold-moon);
+  font-size: 0.76rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wt-spot-locate-btn:hover {
+  background: rgba(229, 193, 88, 0.15);
+  border-color: var(--gold-border);
+  color: var(--gold-moon-bright);
 }
 
 .watchtower .wt-spinner {
@@ -221,11 +755,6 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.iss-custom-marker {
-  background: transparent;
-  border: none;
 }
 
 @media (max-width: 600px) {
@@ -247,12 +776,20 @@
   }
 
   .watchtower .wt-map {
-    height: 320px;
+    height: 340px;
   }
 
   .watchtower .wt-score-circle {
     flex-basis: 100px;
     width: 100px;
     height: 100px;
+  }
+
+  .wt-scroll-cap.left {
+    margin-left: -6px;
+  }
+
+  .wt-scroll-cap.right {
+    margin-right: -6px;
   }
 }
