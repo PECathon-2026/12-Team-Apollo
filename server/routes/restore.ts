@@ -6,6 +6,7 @@ import {
   performPretrainedAiRestoration,
 } from '../utils/scientificRestorer';
 import { isFitsFile, parseAndConvertFits } from '../utils/fitsParser';
+import { solveImage } from '../utils/astrometryService';
 
 export const restoreRouter = Router();
 
@@ -109,7 +110,7 @@ restoreRouter.get('/presets', (_req: Request, res: Response) => {
 
 /**
  * POST /api/restore
- * Handles astronomical image restoration via Scientific Engine, AI Model, or Demo Mode
+ * Handles astronomical image restoration & Astrometry.net star recognition
  */
 restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Response) => {
   try {
@@ -148,17 +149,17 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
       };
     }
 
-    // 1. Handle Demonstration Mode requested or when no file is uploaded but demo mode requested
+    // 1. Handle Demonstration Mode requested
     if (bodyMode === 'demo' || req.body.isDemo === 'true') {
       const demoResult: RestorationResult = {
         id: `dojo-demo-${Date.now()}`,
         status: 'completed',
         originalImageUrl:
           req.body.imageUrl ||
-          'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40',
+          '/bg_star.png',
         restoredImageUrl:
           req.body.imageUrl ||
-          'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=90',
+          '/bg_star.png',
         parameters: parsedParameters,
         metrics: {
           snrImprovementDb: +(15 + (parsedParameters.noiseReductionLevel / 100) * 5).toFixed(1),
@@ -174,10 +175,10 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
           {
             id: 'demo-det-1',
             type: 'candidate_star',
-            label: 'Candidate Stellar Core (Mitsuboshi Alpha)',
-            japaneseLabel: '恒星候補 (三つ星α)',
-            xPercent: 48.5,
-            yPercent: 44.2,
+            label: 'Alpha Celestial Luminary (Sirius Node)',
+            japaneseLabel: '主星 (Alpha Luminary)',
+            xPercent: 77.0,
+            yPercent: 62.0,
             radiusPixels: 8,
             peakBrightness: 245,
             confidence: 0.98,
@@ -197,11 +198,11 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
           },
         ],
         metadata: {
-          originalDimensions: { width: 1200, height: 800 },
-          restoredDimensions: { width: 1200, height: 800 },
+          originalDimensions: { width: 1675, height: 939 },
+          restoredDimensions: { width: 1675, height: 939 },
           originalFileSizeKb: 420,
           restoredFileSizeKb: 512,
-          format: 'JPEG (Demo Sample)',
+          format: 'PNG (Demo Sample)',
           method: 'demonstration_mode',
           methodLabel: 'Demonstration Mode (Development Simulation)',
           processingTimeMs: 310,
@@ -213,7 +214,35 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
         },
       };
 
-      return res.status(200).json(demoResult);
+      return res.status(200).json({
+        ...demoResult,
+        realDetections: [
+          {
+            id: 'det-bg-1',
+            label: 'Alpha Celestial Luminary (天狼星 / Sirius Node)',
+            japaneseLabel: '主星 (Alpha Luminary)',
+            celestialClass: 'star_cluster',
+            confidence: 0.98,
+            bbox: { x: 0.77, y: 0.62, width: 0.065, height: 0.065 },
+            colorHex: '#e5b959',
+            distanceLightYears: 540,
+            astronomicalNotes: 'Coordinates: (1346px, 614px) | Peak Flux: 222/255 | Primary high-flux luminary.',
+            samuraiConstellationLore: 'Regarded by Tokugawa sky watchers as the vanguard star of victory, blazing with celestial fire.',
+          },
+          {
+            id: 'det-bg-2',
+            label: 'Mitsuboshi Core Star (三つ星 / Orion Belt Star)',
+            japaneseLabel: '三つ星 (Mitsuboshi)',
+            celestialClass: 'constellation',
+            confidence: 0.95,
+            bbox: { x: 0.61, y: 0.28, width: 0.06, height: 0.06 },
+            colorHex: '#85e3a8',
+            distanceLightYears: 1200,
+            astronomicalNotes: 'Coordinates: (1078px, 290px) | Peak Flux: 201/255 | High-temperature blue supergiant.',
+            samuraiConstellationLore: 'Adopted as the samurai crest (Kamon) of the Mōri clan, symbolizing unshakeable martial brotherhood.',
+          },
+        ],
+      });
     }
 
     // 2. Validate file presence
@@ -243,7 +272,12 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
       }
     }
 
-    // 4. Execute Selected Restoration Mode
+    // 4. Run Astrometry.net star identification
+    console.log('[RESTORATION-DOJO] Executing Astrometry.net star recognition...');
+    const astrometryResult = await solveImage(processingBuffer, file.originalname);
+    console.log(`[RESTORATION-DOJO] Astrometry found ${astrometryResult.detections.length} identified star objects.`);
+
+    // 5. Execute Selected Restoration Mode
     if (bodyMode === 'ai') {
       try {
         const aiResult = await performPretrainedAiRestoration(processingBuffer, {
@@ -251,17 +285,32 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
           filename: file.originalname,
           isFits,
         });
-        return res.status(200).json(aiResult);
+        return res.status(200).json({
+          ...aiResult,
+          realDetections: astrometryResult.detections,
+          astrometry: {
+            submissionId: astrometryResult.submissionId,
+            jobId: astrometryResult.jobId,
+            status: astrometryResult.status,
+          },
+        });
       } catch (aiErr: any) {
         console.warn('[RESTORATION-DOJO] AI Model request failed or not configured, falling back to Scientific Engine:', aiErr.message);
-        // Fall back to Scientific Engine so user gets genuine restoration even if cloud API is offline
         const scientificFallback = await performScientificRestoration(processingBuffer, {
           parameters: parsedParameters,
           filename: file.originalname,
           isFits,
         });
         scientificFallback.alchemistNotes += ` (Notice: Cloud AI endpoint unavailable [${aiErr.message}]. Successfully processed with built-in Scientific PSF Engine).`;
-        return res.status(200).json(scientificFallback);
+        return res.status(200).json({
+          ...scientificFallback,
+          realDetections: astrometryResult.detections,
+          astrometry: {
+            submissionId: astrometryResult.submissionId,
+            jobId: astrometryResult.jobId,
+            status: astrometryResult.status,
+          },
+        });
       }
     } else {
       // Default & Primary: Genuine Scientific Astronomical Image Engine
@@ -271,7 +320,15 @@ restoreRouter.post('/', upload.single('imageFile'), async (req: Request, res: Re
         isFits,
       });
 
-      return res.status(200).json(restorationResult);
+      return res.status(200).json({
+        ...restorationResult,
+        realDetections: astrometryResult.detections,
+        astrometry: {
+          submissionId: astrometryResult.submissionId,
+          jobId: astrometryResult.jobId,
+          status: astrometryResult.status,
+        },
+      });
     }
   } catch (error: any) {
     console.error('[RESTORATION-DOJO] Internal Error:', error);
