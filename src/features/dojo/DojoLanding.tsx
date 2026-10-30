@@ -16,7 +16,7 @@ export const DojoLanding: React.FC<DojoLandingProps> = ({ onBeginRestoration, on
           position: 'relative',
           overflow: 'hidden',
           padding: '48px 36px',
-          background: 'radial-gradient(ellipse at 80% 20%, rgba(229, 185, 89, 0.12) 0%, rgba(7, 8, 11, 0.95) 75%), var(--ink-900)',
+          background: 'radial-gradient(ellipse at 80% 20%, rgba(220, 38, 38, 0.15) 0%, rgba(7, 8, 11, 0.95) 75%), var(--ink-900)',
           border: '1px solid var(--gold-border)',
           boxShadow: 'var(--shadow-sumi)',
         }}
@@ -31,7 +31,7 @@ export const DojoLanding: React.FC<DojoLandingProps> = ({ onBeginRestoration, on
             fontFamily: 'var(--font-serif)',
             fontSize: '11rem',
             fontWeight: 900,
-            color: 'rgba(229, 185, 89, 0.04)',
+            color: 'rgba(220, 38, 38, 0.04)',
             userSelect: 'none',
             pointerEvents: 'none',
             lineHeight: 1,
@@ -43,7 +43,7 @@ export const DojoLanding: React.FC<DojoLandingProps> = ({ onBeginRestoration, on
         <div style={{ position: 'relative', zIndex: 2, maxWidth: '780px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
             <span className="hanko-seal" style={{ fontSize: '0.8rem', padding: '3px 10px' }}>
-              修復道場
+              RESTORATION
             </span>
             <span className="gold-badge">
               <Sparkles size={13} />
@@ -71,7 +71,7 @@ export const DojoLanding: React.FC<DojoLandingProps> = ({ onBeginRestoration, on
                 marginTop: '6px',
               }}
             >
-              天体画像修復所 • The Celestial Forge of Pure Light
+              The Celestial Forge of Pure Light
             </span>
           </h1>
 

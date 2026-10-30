@@ -53,8 +53,20 @@
 }
 
 .watchtower .wt-button-primary {
-  color: #111;
-  background: var(--gold-moon);
+  background: linear-gradient(135deg, #f5c862 0%, #d49b29 50%, #9e6f15 100%) !important;
+  color: #060709 !important;
+  border: 1px solid #ffe399 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 16px rgba(245, 200, 98, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.watchtower .wt-button-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffdc85 0%, #e5ad35 50%, #b8831c 100%) !important;
+  border-color: #ffffff !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 22px rgba(245, 200, 98, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.7) !important;
+  color: #000000 !important;
 }
 
 .watchtower .wt-muted {

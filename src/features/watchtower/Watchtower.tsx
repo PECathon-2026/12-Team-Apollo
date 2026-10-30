@@ -38,8 +38,8 @@ const selectedLocationIcon = L.divIcon({
   className: "iss-custom-marker",
   html: `
     <div style="width:22px;height:22px;border-radius:50%;
-      background:#d63c3c;border:3px solid #fff;
-      box-shadow:0 0 14px #e5b959;">
+      background:#dc2626;border:3px solid #fff;
+      box-shadow:0 0 14px #ef4444;">
     </div>
   `,
   iconSize: [28, 28],
@@ -50,7 +50,7 @@ const spotIcon = L.divIcon({
   className: "iss-custom-marker",
   html: `
     <div style="width:14px;height:14px;border-radius:50%;
-      background:#55f58c;border:2px solid #fff;">
+      background:#ef4444;border:2px solid #fff;box-shadow:0 0 8px rgba(220,38,38,0.7);">
     </div>
   `,
   iconSize: [18, 18],
@@ -354,7 +354,7 @@ export const Watchtower: React.FC = () => {
                 marginBottom: 8,
               }}
             >
-              <span className="hanko-seal">望楼</span>
+              <span className="hanko-seal">CITADEL</span>
               <span className="gold-badge">
                 <Satellite size={12} />
                 NIGHT SKY OBSERVATORY
@@ -369,7 +369,7 @@ export const Watchtower: React.FC = () => {
                   fontWeight: 400,
                 }}
               >
-                | 天空の望楼
+                | Night Sky Observatory
               </span>
             </h1>
 

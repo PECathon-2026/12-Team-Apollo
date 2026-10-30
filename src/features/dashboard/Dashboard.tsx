@@ -3,39 +3,35 @@ import SunCalc from 'suncalc';
 import {
   Satellite,
   Scroll,
-  Moon,
   Eye,
-  Scan,
   Sword,
   ArrowRight,
-  Crosshair,
-  Zap,
   Clock,
   Radio,
 } from 'lucide-react';
 import { NavSectionId } from '../../types';
+import { DashboardBackground } from './components/DashboardBackground';
+import { WatchtowerIllustration } from './components/WatchtowerIllustration';
+import { CelestialScrollIllustration } from './components/CelestialScrollIllustration';
+import { SpiritLensIllustration } from './components/SpiritLensIllustration';
+import { DojoIllustration } from './components/DojoIllustration';
 
 interface DashboardProps {
   onSelectOption: (option: Exclude<NavSectionId, 'dashboard'>) => void;
 }
 
-interface OptionCardConfig {
+interface MinimalCardConfig {
   id: Exclude<NavSectionId, 'dashboard'>;
-  indexLabel: string;
-  kanjiSeal: string;
-  romaji: string;
+  gate: string;
+  tag: string;
   title: string;
-  subtitle: string;
-  description: string;
-  icon: React.ReactNode;
-  accentColor: string;
-  glowColor: string;
-  badges: string[];
+  oneLineDesc: string;
+  statusBadge: string;
   launchText: string;
-  statsPreview: {
-    label: string;
-    value: string;
-  };
+  statLabel: string;
+  statValue: string;
+  artwork: React.ReactNode;
+  icon: React.ReactNode;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
@@ -59,422 +55,229 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
     return () => clearInterval(timer);
   }, []);
 
-  // Compute real-time live lunar telemetry using SunCalc
+  // Compute live lunar telemetry via SunCalc
   const moonTelemetry = useMemo(() => {
     const now = new Date();
     const illumination = SunCalc.getMoonIllumination(now);
     const p = illumination.phase;
 
     let phaseName = 'New Moon';
-    let phaseJapanese = '新月 (Shingetsu)';
     if (p >= 0.03 && p < 0.22) {
       phaseName = 'Waxing Crescent';
-      phaseJapanese = '三日月 (Mikazuki)';
     } else if (p >= 0.22 && p < 0.28) {
       phaseName = 'First Quarter';
-      phaseJapanese = '上弦の月 (Jōgen)';
     } else if (p >= 0.28 && p < 0.47) {
       phaseName = 'Waxing Gibbous';
-      phaseJapanese = '十三夜 (Jūsanya)';
     } else if (p >= 0.47 && p < 0.53) {
       phaseName = 'Full Moon';
-      phaseJapanese = '望月 (Mochizuki)';
     } else if (p >= 0.53 && p < 0.72) {
       phaseName = 'Waning Gibbous';
-      phaseJapanese = '十六夜 (Izayoi)';
     } else if (p >= 0.72 && p < 0.78) {
       phaseName = 'Third Quarter';
-      phaseJapanese = '下弦の月 (Kagen)';
     } else if (p >= 0.78 && p < 0.97) {
       phaseName = 'Waning Crescent';
-      phaseJapanese = '有明の月 (Ariake)';
     }
 
     return {
       phaseName,
-      phaseJapanese,
       illuminationPercent: Math.round(illumination.fraction * 100),
     };
   }, []);
 
-  const options: OptionCardConfig[] = [
+  // 4 Minimal Cards: Clean, straightforward, 1 line max under section heading
+  const cards: MinimalCardConfig[] = [
     {
       id: 'watchtower',
-      indexLabel: '選抜一 • OPTION 01',
-      kanjiSeal: '望楼',
-      romaji: 'Bōrō',
+      gate: 'GATE 01',
+      tag: 'ORBIT',
       title: 'Watchtower',
-      subtitle: 'ISS Tracking & Feudal Citadel Passes',
-      description:
-        'Track the International Space Station in real time on a dark orbital canvas, predict overflight passes across ancient samurai watchposts, and locate dark-sky spots scored by Samurai Honor ranking.',
-      icon: <Satellite size={28} color="var(--vermilion-bright)" />,
-      accentColor: 'var(--vermilion)',
-      glowColor: 'var(--vermilion-glow)',
-      badges: ['Orbital Citadel Telemetry', 'Castle Pass Predictions', 'Honor Score Calculator', 'Dark Sky Radar'],
-      launchText: 'Launch Watchtower • 望楼を起動',
-      statsPreview: {
-        label: 'Orbit Alt / Velocity',
-        value: '~418 km • 27.6k km/h',
-      },
+      oneLineDesc: 'Real-time ISS orbital tracking, citadel passes, and dark sky forecasting.',
+      statusBadge: '● LIVE 418 KM',
+      launchText: 'LAUNCH WATCHTOWER',
+      statLabel: 'Orbit Alt / Velocity',
+      statValue: '~418 km • 27.6k km/h',
+      artwork: <WatchtowerIllustration />,
+      icon: <Satellite size={18} color="#ff4d4d" />,
     },
     {
       id: 'scroll',
-      indexLabel: '選抜二 • OPTION 02',
-      kanjiSeal: '天巻',
-      romaji: 'Tenkan',
+      gate: 'GATE 02',
+      tag: 'LUNAR',
       title: 'Celestial Scroll',
-      subtitle: 'SunCalc Ephemeris & Samurai Chronicles',
-      description:
-        'Unroll the sacred lunar ephemeris powered by astronomical mathematical algorithms. Discover exact moon phases, rise and set times, and legendary samurai tactics calibrated to the night illumination.',
-      icon: <Scroll size={28} color="var(--gold-moon-bright)" />,
-      accentColor: 'var(--gold-moon)',
-      glowColor: 'var(--gold-glow)',
-      badges: ['SunCalc Illumination', 'Historical Battle Lore', 'Planetary Alignments', 'Auspicious Eclipses'],
-      launchText: 'Unroll Scroll • 天巻を開く',
-      statsPreview: {
-        label: 'Current Moon Phase',
-        value: `${moonTelemetry.illuminationPercent}% • ${moonTelemetry.phaseName}`,
-      },
+      oneLineDesc: 'SunCalc lunar ephemeris, moon phase illumination, and sky events.',
+      statusBadge: `● ${moonTelemetry.illuminationPercent}% MOON`,
+      launchText: 'OPEN SCROLL',
+      statLabel: 'Current Phase',
+      statValue: `${moonTelemetry.illuminationPercent}% • ${moonTelemetry.phaseName}`,
+      artwork: <CelestialScrollIllustration />,
+      icon: <Scroll size={18} color="#ff4d4d" />,
     },
     {
       id: 'spirit-lens',
-      indexLabel: '選抜三 • OPTION 03',
-      kanjiSeal: '霊鏡',
-      romaji: 'Reikyō',
+      gate: 'GATE 03',
+      tag: 'VISION',
       title: 'Spirit Lens',
-      subtitle: 'Deep-Sky AI Vision & Clan Constellations',
-      description:
-        'Peer through the mystical mirror of computer vision. Automatically identify nebulae, star clusters, and galaxies within raw sky photography, deciphering the ancestral Kamon crests of samurai clans.',
-      icon: <Eye size={28} color="#5ad896" />,
-      accentColor: '#4e9b72',
-      glowColor: 'rgba(78, 155, 114, 0.35)',
-      badges: ['AI Bounding Box Vision', 'Samurai Clan Constellations', 'Mōri Mitsuboshi Lore', 'Confidence Tuning'],
-      launchText: 'Awaken Spirit Lens • 霊鏡を覗く',
-      statsPreview: {
-        label: 'Target Constellations',
-        value: 'Orion M42 • Mōri Clan',
-      },
+      oneLineDesc: 'AI computer vision detecting deep-sky nebulae, clusters, and constellations.',
+      statusBadge: '● AI CORE READY',
+      launchText: 'ACTIVATE LENS',
+      statLabel: 'Target Sector',
+      statValue: 'Orion M42 • Mōri Clan',
+      artwork: <SpiritLensIllustration />,
+      icon: <Eye size={18} color="#ff4d4d" />,
     },
     {
       id: 'dojo',
-      indexLabel: '選抜四 • OPTION 04',
-      kanjiSeal: '道場',
-      romaji: 'Dōjō',
+      gate: 'GATE 04',
+      tag: 'DOJO',
       title: 'Restoration Dojo',
-      subtitle: 'Astrophoto Denoising & Katana Precision',
-      description:
-        'Hone grainy astrophotography with sword-grade clarity. Apply Sumi-e ink noise reduction, star profile sharpening, and star de-haloing, inspected with an interactive before-and-after Katana blade slider.',
-      icon: <Sword size={28} color="var(--katana-steel)" />,
-      accentColor: 'var(--katana-steel)',
-      glowColor: 'rgba(154, 169, 191, 0.35)',
-      badges: ['Interactive Katana Slider', '+18.4 dB SNR Gain', '1,420 Stars Recovered', 'Tamahagane Presets'],
-      launchText: 'Enter Dojo • 道場に入門',
-      statsPreview: {
-        label: 'Restoration Alchemy',
-        value: '94% Noise Reduction',
-      },
+      oneLineDesc: 'Astrophoto noise reduction and star sharpening with interactive slider.',
+      statusBadge: '● +18.4 dB SNR',
+      launchText: 'ENTER DOJO',
+      statLabel: 'Restoration Gain',
+      statValue: '+18.4 dB SNR • 94% Noise Clean',
+      artwork: <DojoIllustration />,
+      icon: <Sword size={18} color="#ff4d4d" />,
     },
   ];
 
   return (
-    <div className="dashboard-root">
-      {/* Standalone Dashboard Brand Header */}
-      <header className="standalone-dashboard-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div
-            style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--ink-850)',
-              border: '2px solid var(--gold-moon)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 16px var(--gold-glow)',
-            }}
-          >
-            <Moon size={22} color="var(--gold-moon-bright)" />
-          </div>
+    <div className="jrpg-dashboard-container">
+      {/* 1. Atmospheric Background Layer with Rotating Rinne-Sharingan Moon */}
+      <DashboardBackground />
 
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span
-                style={{
-                  fontFamily: 'var(--font-serif)',
-                  fontSize: '1.25rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.06em',
-                  color: 'var(--washi-white)',
-                }}
-              >
-                TSUKUYOMI WATCH
-              </span>
-              <span className="hanko-seal" style={{ fontSize: '0.65rem' }}>
-                月読の監視
-              </span>
-            </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--washi-muted)' }}>
-              Samurai Celestial Guide & Astrophotography Suite
-            </div>
+      {/* 2. Top Header: Fully Opaque, Centered TSUKUYOMI WATCH with Gold Accents */}
+      <header className="jrpg-top-hud">
+        {/* Left Wing: Live JST Telemetry */}
+        <div className="jrpg-hud-wing-left">
+          <div className="jrpg-hud-clock">
+            <Clock size={14} color="#ffd475" />
+            <span>{currentTimeJST || '00:00:00'}</span>
+            <span className="tz-tag">JST</span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* JST Clock */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.82rem',
-              color: 'var(--washi-silk)',
-              background: 'rgba(13, 15, 21, 0.7)',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-ink)',
-            }}
-          >
-            <Clock size={14} color="var(--gold-moon)" />
-            <span>{currentTimeJST || '00:00:00'}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>JST</span>
+        {/* Center: Fully Centered, Opaque TSUKUYOMI WATCH Emblem */}
+        <div className="jrpg-hud-center-title">
+          <div className="jrpg-hud-crest">
+            <span className="jrpg-crest-kanji">月</span>
           </div>
+          <div className="jrpg-hud-title-col">
+            <div className="jrpg-hud-title-row">
+              <span className="jrpg-hud-game-title">TSUKUYOMI WATCH</span>
+              <span className="jrpg-hud-hanko">HUB</span>
+            </div>
+            <span className="jrpg-hud-subtitle">Orbital Celestial Deck & Astrophotography</span>
+          </div>
+        </div>
 
-          {/* Beacon indicator */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '6px 10px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'rgba(13, 15, 21, 0.7)',
-              border: '1px solid rgba(78, 155, 114, 0.3)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.75rem',
-              color: '#5ad896',
-            }}
-          >
-            <Radio size={13} color="#5ad896" />
-            <span>ORBIT LINK OK</span>
+        {/* Right Wing: Live Orbit Beacon */}
+        <div className="jrpg-hud-wing-right">
+          <div className="jrpg-hud-beacon">
+            <Radio size={13} color="#ffd475" />
+            <span>LINK OK</span>
           </div>
         </div>
       </header>
 
-      {/* 1. Hero Command Header */}
-      <section className="dashboard-hero">
-        <div className="dashboard-hero-watermark">月読</div>
-
-        <div className="dashboard-hero-content">
-          <div className="dashboard-hero-badge-row">
-            <span className="hanko-seal">本陣 • COMMAND HUB</span>
-            <span className="gold-badge">
-              <Zap size={13} />
-              四大選抜 • Four Celestial Gates Active
-            </span>
-          </div>
-
-          <h1 className="dashboard-hero-title">
-            <span>Tsukuyomi Command Deck</span>
-            <span className="title-kanji">月読の監視</span>
-          </h1>
-
-          <p className="dashboard-hero-subtitle">
-            Welcome to the central observatory of Tsukuyomi Watch. Choose from the four specialized samurai
-            celestial modules below to begin your mission—tracking orbital citadels, calculating lunar ephemeris,
-            identifying clan constellations, or honing raw astrophotographs.
-          </p>
-
-          <div className="dashboard-hero-quote">
-            "Even in the deepest shadow, the celestial moon cuts the darkness like a blade."
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Live Telemetry Bar */}
-      <section className="dashboard-kpi-grid">
-        <div className="dashboard-kpi-card">
-          <div
-            className="dashboard-kpi-icon"
-            style={{
-              backgroundColor: 'rgba(214, 60, 60, 0.12)',
-              border: '1px solid var(--vermilion-border)',
-            }}
-          >
-            <Satellite size={20} color="var(--vermilion-bright)" />
-          </div>
-          <div className="dashboard-kpi-info">
-            <span className="dashboard-kpi-label">Orbital Citadel (ISS)</span>
-            <span className="dashboard-kpi-value">418 km • 27.6k km/h</span>
-            <span className="dashboard-kpi-subtext">Low Earth Orbit beacon live</span>
-          </div>
-        </div>
-
-        <div className="dashboard-kpi-card">
-          <div
-            className="dashboard-kpi-icon"
-            style={{
-              backgroundColor: 'rgba(229, 185, 89, 0.12)',
-              border: '1px solid var(--gold-border)',
-            }}
-          >
-            <Moon size={20} color="var(--gold-moon-bright)" />
-          </div>
-          <div className="dashboard-kpi-info">
-            <span className="dashboard-kpi-label">Lunar Phase (SunCalc)</span>
-            <span className="dashboard-kpi-value">
-              {moonTelemetry.illuminationPercent}% • {moonTelemetry.phaseName}
-            </span>
-            <span className="dashboard-kpi-subtext">{moonTelemetry.phaseJapanese}</span>
-          </div>
-        </div>
-
-        <div className="dashboard-kpi-card">
-          <div
-            className="dashboard-kpi-icon"
-            style={{
-              backgroundColor: 'rgba(78, 155, 114, 0.12)',
-              border: '1px solid rgba(78, 155, 114, 0.3)',
-            }}
-          >
-            <Scan size={20} color="#5ad896" />
-          </div>
-          <div className="dashboard-kpi-info">
-            <span className="dashboard-kpi-label">Spirit Lens Vision</span>
-            <span className="dashboard-kpi-value">AI Model Online</span>
-            <span className="dashboard-kpi-subtext">Clan constellation lore ready</span>
-          </div>
-        </div>
-
-        <div className="dashboard-kpi-card">
-          <div
-            className="dashboard-kpi-icon"
-            style={{
-              backgroundColor: 'rgba(154, 169, 191, 0.12)',
-              border: '1px solid rgba(154, 169, 191, 0.3)',
-            }}
-          >
-            <Sword size={20} color="var(--katana-steel)" />
-          </div>
-          <div className="dashboard-kpi-info">
-            <span className="dashboard-kpi-label">Restoration Engine</span>
-            <span className="dashboard-kpi-value">+18.4 dB SNR Gain</span>
-            <span className="dashboard-kpi-subtext">Katana slider pipeline primed</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. The 4 Options Selection Hub */}
-      <section className="dashboard-options-section">
-        <div className="dashboard-section-header">
-          <div className="dashboard-section-title">
-            <Crosshair size={22} color="var(--gold-moon)" />
-            <h2>Choose Out of Four Celestial Options (四大選抜)</h2>
-          </div>
-          <div className="dashboard-section-hint">
-            Select an option card or click its button to enter that operational suite
-          </div>
-        </div>
-
-        <div className="dashboard-options-grid">
-          {options.map((option) => (
-            <div
-              key={option.id}
-              className="dashboard-option-card"
-              style={
-                {
-                  '--card-accent': option.accentColor,
-                  '--card-glow': option.glowColor,
-                } as React.CSSProperties
+      {/* 3. The 4 Minimal Banner Cards Deck */}
+      <main className="jrpg-cards-deck">
+        {cards.map((card) => (
+          <article
+            key={card.id}
+            className="jrpg-banner-card"
+            onClick={() => onSelectOption(card.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectOption(card.id);
               }
-              onClick={() => onSelectOption(option.id)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onSelectOption(option.id);
-                }
-              }}
-              aria-label={`Select Option: ${option.title}`}
-            >
-              <div>
-                <div className="dashboard-option-header">
-                  <div className="dashboard-option-icon-box">{option.icon}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="dashboard-option-index-badge">{option.indexLabel}</span>
-                    <span className="hanko-seal">{option.kanjiSeal}</span>
-                  </div>
+            }}
+            aria-label={`Enter section ${card.title}`}
+          >
+            {/* Corner Brackets in Blood Red */}
+            <div className="card-corner-ornament corner-top-left" />
+            <div className="card-corner-ornament corner-top-right" />
+            <div className="card-corner-ornament corner-bottom-left" />
+            <div className="card-corner-ornament corner-bottom-right" />
+            <div className="card-inner-bevel" />
+
+            {/* Left Content Column */}
+            <div className="jrpg-card-main-col">
+              {/* Header Badges Row */}
+              <div className="jrpg-card-header-bar">
+                <div className="jrpg-card-badge-cluster">
+                  <span className="jrpg-rarity-badge">{card.gate}</span>
+                  <span className="jrpg-hanko-box">{card.tag}</span>
                 </div>
+                <div className="jrpg-card-status-badge">{card.statusBadge}</div>
+              </div>
 
-                <div className="dashboard-option-title-row">
-                  <h3 className="dashboard-option-title">{option.title}</h3>
-                  <span className="dashboard-option-subtitle">({option.romaji})</span>
-                </div>
-
-                <div
-                  style={{
-                    fontSize: '0.82rem',
-                    color: 'var(--gold-moon)',
-                    marginBottom: '10px',
-                    fontFamily: 'var(--font-serif)',
-                  }}
-                >
-                  {option.subtitle}
-                </div>
-
-                <p className="dashboard-option-desc">{option.description}</p>
-
-                <div className="dashboard-option-tags">
-                  {option.badges.map((badge, idx) => (
-                    <span key={idx} className="dashboard-tag">
-                      • {badge}
-                    </span>
-                  ))}
+              {/* Title Block */}
+              <div className="jrpg-card-title-block">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {card.icon}
+                  <h2 className="jrpg-card-japanese-title" style={{ margin: 0, fontSize: '1.35rem' }}>
+                    {card.title}
+                  </h2>
                 </div>
               </div>
 
-              <div className="dashboard-option-footer">
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)', textTransform: 'uppercase' }}>
-                    {option.statsPreview.label}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.88rem',
-                      fontWeight: 700,
-                      color: 'var(--gold-moon-bright)',
-                    }}
-                  >
-                    {option.statsPreview.value}
-                  </span>
+              {/* Just One Line Max Text Under Heading */}
+              <p
+                className="jrpg-card-description"
+                style={{
+                  margin: '8px 0 16px 0',
+                  fontSize: '0.86rem',
+                  color: '#d4d4d8',
+                  lineHeight: '1.4',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
+                }}
+                title={card.oneLineDesc}
+              >
+                {card.oneLineDesc}
+              </p>
+
+              {/* Action & Stats Footer Bar */}
+              <div className="jrpg-card-action-bar">
+                <div className="jrpg-card-stats-preview">
+                  <span className="stats-preview-label">{card.statLabel}</span>
+                  <span className="stats-preview-value">{card.statValue}</span>
                 </div>
 
                 <button
                   type="button"
-                  className="dashboard-option-action-btn"
+                  className="jrpg-deploy-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onSelectOption(option.id);
+                    onSelectOption(card.id);
                   }}
                 >
-                  <span>{option.launchText}</span>
-                  <ArrowRight size={16} />
+                  <span>{card.launchText}</span>
+                  <ArrowRight size={15} />
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Standalone Dashboard Footer */}
-      <footer className="standalone-dashboard-footer">
-        <p>"Even in the deepest shadow, the celestial moon cuts the darkness like a blade."</p>
-        <p style={{ fontSize: '0.78rem', color: 'var(--washi-muted)', marginTop: '8px', letterSpacing: '0.04em' }}>
-          Tsukuyomi Watch v0.1.0 • Choose an operational gate above to commence celestial navigation
-        </p>
+            {/* Right Themed Visual Artwork Area */}
+            <div className="jrpg-card-artwork-col">
+              <div className="artwork-gold-frame">
+                {card.artwork}
+              </div>
+            </div>
+          </article>
+        ))}
+      </main>
+
+      {/* 4. Minimal Footer */}
+      <footer className="jrpg-dashboard-footer" style={{ marginTop: '24px', paddingTop: '18px' }}>
+        <div className="footer-system-info">
+          TSUKUYOMI COMMAND v0.1.0 • SYSTEM OPERATIONAL
+        </div>
       </footer>
     </div>
   );

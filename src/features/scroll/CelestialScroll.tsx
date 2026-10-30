@@ -593,7 +593,7 @@ export const CelestialScroll: React.FC = () => {
   return (
     <div className="cs-container">
       <header className="cs-header">
-        <h1>Celestial Scroll 天文巻物</h1>
+        <h1>Celestial Scroll</h1>
         <h2>LUNAR EPHEMERIS</h2>
         <p>A Japanese-inspired guide to the meteor showers, eclipses, spaceflight and the celestial events above you.</p>
         <p><strong>ALL TIMES IST · UTC+05:30</strong></p>

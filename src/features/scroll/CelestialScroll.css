@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --cs-ink: #191a20;
-  --cs-ink-soft: #55545a;
-  --cs-paper: #f5f0e5;
-  --cs-paper-light: #fcf9f1;
-  --cs-paper-dark: #e8dfcd;
-  --cs-cinnabar: #a43b32;
-  --cs-cinnabar-dark: #7e2925;
-  --cs-gold: #b79a61;
-  --cs-border: rgba(66, 54, 41, 0.16);
-  --cs-shadow: 0 14px 40px rgba(32, 26, 18, 0.09);
+  --cs-ink: #ffffff;
+  --cs-ink-soft: #a1a1aa;
+  --cs-paper: #08090d;
+  --cs-paper-light: #12080a;
+  --cs-paper-dark: #040507;
+  --cs-cinnabar: #ef4444;
+  --cs-cinnabar-dark: #991b1b;
+  --cs-gold: #ff4d4d;
+  --cs-border: rgba(220, 38, 38, 0.3);
+  --cs-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
   --cs-serif: 'Cormorant Garamond', Georgia, serif;
   --cs-sans: 'Inter', sans-serif;
   --cs-japanese: 'Noto Sans JP', sans-serif;
@@ -28,6 +28,10 @@
     radial-gradient(ellipse at 12% 7%, rgba(188, 160, 112, 0.14), transparent 30%),
     radial-gradient(ellipse at 91% 26%, rgba(164, 59, 50, 0.055), transparent 27%),
     var(--cs-paper);
+  background:
+    radial-gradient(ellipse at 12% 7%, rgba(220, 38, 38, 0.12), transparent 35%),
+    radial-gradient(ellipse at 91% 26%, rgba(185, 28, 28, 0.08), transparent 30%),
+    #08090d;
   font-family: var(--cs-sans);
 }
 
@@ -1150,4 +1154,60 @@
   .cs-moon-summary > .cs-moon {
     font-size: clamp(5rem, 21vw, 7.5rem) !important;
   }
+}
+
+/* ==========================================================
+   Red & Black Unified Theme Overrides
+   ========================================================== */
+.cs-container {
+  background: radial-gradient(circle at 50% 15%, rgba(220, 38, 38, 0.14) 0%, #050608 75%) !important;
+  color: #ffffff !important;
+}
+
+.cs-event-card,
+.cs-moon-summary,
+.cs-controls,
+.cs-calendar-wrapper,
+.cs-event-row,
+.cs-filter-group {
+  background: linear-gradient(145deg, #0d0608 0%, #050608 100%) !important;
+  border-color: rgba(220, 38, 38, 0.35) !important;
+  color: #f4f4f5 !important;
+}
+
+.cs-event-card:hover {
+  border-color: #ef4444 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 0 0 16px rgba(220, 38, 38, 0.35) !important;
+}
+
+.cs-controls button,
+.cs-header > button,
+.cs-icon-button {
+  background: rgba(220, 38, 38, 0.16) !important;
+  border-color: rgba(220, 38, 38, 0.45) !important;
+  color: #ff4d4d !important;
+}
+
+.cs-controls button:hover,
+.cs-header > button:hover {
+  background: linear-gradient(180deg, #dc2626, #991b1b) !important;
+  color: #ffffff !important;
+  border-color: #ff3333 !important;
+}
+
+.cs-calendar-cell {
+  background: rgba(14, 6, 8, 0.88) !important;
+  border-color: rgba(220, 38, 38, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.cs-calendar-cell.is-selected,
+.cs-calendar-cell:hover {
+  border-color: #ef4444 !important;
+  background: rgba(220, 38, 38, 0.24) !important;
+}
+
+.cs-samurai-directive {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-left: 3px solid #ef4444 !important;
 }

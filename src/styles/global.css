@@ -4,50 +4,50 @@
  */
 
 :root {
-  /* Ink Palette (墨 - Sumi) */
-  --ink-950: #07080b;
-  --ink-900: #0d0f15;
-  --ink-850: #141722;
-  --ink-800: #1c202e;
-  --ink-750: #23293a;
-  --ink-700: #2e3549;
+  /* Ink Palette (Obsidian & Deep Black) */
+  --ink-950: #040507;
+  --ink-900: #08090d;
+  --ink-850: #10080a;
+  --ink-800: #160a0d;
+  --ink-750: #200d11;
+  --ink-700: #2b1217;
 
-  /* Rice Paper & Washi Tones (和紙) */
-  --washi-white: #f5f2e9;
-  --washi-silk: #ded8cb;
-  --washi-parchment: #c2bba8;
-  --washi-muted: #8c8577;
-  --washi-dim: #5c574e;
+  /* Rice Paper & Washi Tones (White & Silver) */
+  --washi-white: #ffffff;
+  --washi-silk: #f4f4f5;
+  --washi-parchment: #d4d4d8;
+  --washi-muted: #a1a1aa;
+  --washi-dim: #71717a;
 
-  /* Celestial Lunar Gold (月詠の金) */
-  --gold-moon: #e5b959;
-  --gold-moon-bright: #ffd475;
-  --gold-moon-dim: #a48135;
-  --gold-glow: rgba(229, 185, 89, 0.22);
-  --gold-border: rgba(229, 185, 89, 0.25);
+  /* Red Moon Palette (Blood Red / Crimson) */
+  --gold-moon: #ef4444;
+  --gold-moon-bright: #ff4d4d;
+  --gold-moon-dim: #991b1b;
+  --gold-glow: rgba(220, 38, 38, 0.35);
+  --gold-border: rgba(220, 38, 38, 0.35);
 
-  /* Samurai Vermilion (朱色 - Shu-iro) */
-  --vermilion: #d63c3c;
-  --vermilion-bright: #ff5252;
-  --vermilion-dim: #8e2323;
-  --vermilion-glow: rgba(214, 60, 60, 0.28);
-  --vermilion-border: rgba(214, 60, 60, 0.35);
+  /* Samurai Vermilion (Deep Crimson) */
+  --vermilion: #dc2626;
+  --vermilion-bright: #ff3333;
+  --vermilion-dim: #7f1d1d;
+  --vermilion-glow: rgba(220, 38, 38, 0.35);
+  --vermilion-border: rgba(220, 38, 38, 0.45);
 
-  /* Tamahagane Katana Steel (玉鋼) */
-  --katana-steel: #9aa9bf;
-  --katana-steel-dim: #5c6878;
-  --katana-sheen: rgba(186, 205, 230, 0.15);
+  /* Katana Steel (Red & Silver) */
+  --katana-steel: #ff4d4d;
+  --katana-steel-dim: #71717a;
+  --katana-sheen: rgba(220, 38, 38, 0.2);
 
-  /* Celestial Jade / Night Mist */
-  --night-mist: rgba(14, 18, 28, 0.75);
-  --bamboo-jade: #4e9b72;
-  --bamboo-glow: rgba(78, 155, 114, 0.25);
+  /* Celestial Vision */
+  --night-mist: rgba(16, 6, 8, 0.85);
+  --bamboo-jade: #ef4444;
+  --bamboo-glow: rgba(220, 38, 38, 0.3);
 
   /* Elevation Shadows & Glows */
-  --shadow-sumi: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(229, 185, 89, 0.15);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.6);
-  --border-delicate: 1px solid rgba(229, 185, 89, 0.16);
-  --border-ink: 1px solid rgba(255, 255, 255, 0.08);
+  --shadow-sumi: 0 10px 30px -5px rgba(0, 0, 0, 0.9), 0 0 1px 1px rgba(220, 38, 38, 0.25);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.8);
+  --border-delicate: 1px solid rgba(220, 38, 38, 0.3);
+  --border-ink: 1px solid rgba(220, 38, 38, 0.18);
 
   /* Font Stacks */
   --font-serif: 'Noto Serif JP', 'Zen Antique', 'Cinzel', serif;
@@ -181,29 +181,40 @@ p {
 }
 
 /* Buttons */
-.btn-samurai-gold {
+.btn-samurai-gold,
+.watchtower .wt-button-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #e5b959, #b88f34);
-  color: var(--ink-950);
-  border: 1px solid var(--gold-moon-bright);
+  padding: 10px 22px;
+  background: linear-gradient(135deg, #f5c862 0%, #d49b29 50%, #9e6f15 100%) !important;
+  color: #060709 !important;
+  border: 1px solid #ffe399 !important;
   border-radius: var(--radius-sm);
   font-family: var(--font-serif);
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 12px var(--gold-glow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 16px rgba(245, 200, 98, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-.btn-samurai-gold:hover {
-  background: linear-gradient(135deg, #ffd475, #c79e3e);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 18px rgba(229, 185, 89, 0.45);
+.btn-samurai-gold:hover:not(:disabled),
+.watchtower .wt-button-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffdc85 0%, #e5ad35 50%, #b8831c 100%) !important;
+  border-color: #ffffff !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 22px rgba(245, 200, 98, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.7) !important;
+  color: #000000 !important;
+}
+
+.btn-samurai-gold:active:not(:disabled),
+.watchtower .wt-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 8px rgba(245, 200, 98, 0.35) !important;
 }
 
 .btn-samurai-outline {
@@ -662,40 +673,802 @@ p {
 }
 
 /* ==========================================================
-   Standalone Initial Dashboard View Styles
+   JRPG Inspired Japanese Game Dashboard Styles (Pure Red & Black Theme)
    ========================================================== */
 
 .standalone-dashboard-wrapper {
   min-height: 100vh;
   width: 100%;
-  max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: 24px 24px 60px 24px;
-  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+  background-color: #040507;
   display: flex;
   flex-direction: column;
 }
 
-.standalone-dashboard-header {
+.jrpg-dashboard-container {
+  position: relative;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 18px 24px 60px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+  animation: jrpgFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes jrpgFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Atmospheric Background: Rotating Rinnegan Blood Moon (Red & Black) */
+.jrpg-dashboard-bg-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.jrpg-space-ambient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(185, 28, 28, 0.16) 0%, rgba(12, 14, 20, 0.98) 65%, #040507 100%);
+}
+
+.jrpg-moon-wrapper {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(600px, 82vw);
+  height: min(600px, 82vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.28;
+  transition: opacity 0.5s ease;
+}
+
+.jrpg-dashboard-container:hover .jrpg-moon-wrapper {
+  opacity: 0.34;
+}
+
+.jrpg-moon-aura {
+  position: absolute;
+  inset: -25%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, rgba(185, 28, 28, 0.2) 45%, transparent 70%);
+  filter: blur(40px);
+}
+
+.jrpg-rinnegan-moon-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: contain;
+  animation: jrpgMoonRotate 130s linear infinite;
+  filter: drop-shadow(0 0 55px rgba(220, 38, 38, 0.65));
+}
+
+@keyframes jrpgMoonRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.jrpg-moon-vector-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: jrpgMoonRotate 130s linear infinite;
+}
+
+.jrpg-star-field {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.2px 1.2px at 90px 140px, #ef4444, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 240px 90px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.4px 1.4px at 320px 220px, #dc2626, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 450px 120px, #ffffff, rgba(0,0,0,0));
+  background-size: 500px 300px;
+  opacity: 0.3;
+}
+
+/* JRPG Top Resource HUD Bar (Fully Opaque, Centered, Gold & Red Accents) */
+.jrpg-top-hud {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: #080406 !important; /* Fully opaque solid background */
+  border: 1.5px solid #d4af37 !important; /* Polished gold accent border */
+  border-radius: 8px;
+  padding: 12px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.95), 0 0 18px rgba(212, 175, 55, 0.25), inset 0 1px 0 rgba(255, 215, 0, 0.25);
+  position: relative;
+  z-index: 5;
+}
+
+@media (max-width: 820px) {
+  .jrpg-top-hud {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .jrpg-hud-wing-left,
+  .jrpg-hud-wing-right {
+    justify-content: center !important;
+  }
+}
+
+.jrpg-hud-wing-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.jrpg-hud-center-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.jrpg-hud-wing-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.jrpg-hud-crest {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2d1008 0%, #0c0406 100%);
+  border: 2px solid #e5b959 !important; /* Gold crest ring */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(229, 185, 89, 0.55), inset 0 0 8px rgba(229, 185, 89, 0.3);
+  flex-shrink: 0;
+}
+
+.jrpg-crest-kanji {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #ffd475 !important; /* Gold Crest Kanji */
+  text-shadow: 0 0 12px rgba(255, 212, 117, 0.85);
+}
+
+.jrpg-hud-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+
+.jrpg-hud-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jrpg-hud-game-title {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(229, 185, 89, 0.45), 0 0 35px rgba(239, 68, 68, 0.55), 0 2px 6px rgba(0, 0, 0, 0.95);
+}
+
+.jrpg-hud-hanko {
+  background: linear-gradient(135deg, #f5c862, #b88f34) !important;
+  color: #060709 !important;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid #ffe399 !important;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 12px rgba(245, 200, 98, 0.55);
+}
+
+.jrpg-hud-subtitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffd475 !important; /* Gold Subtitle Accent */
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+.jrpg-hud-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffd475;
+  background: #0d0608;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(229, 185, 89, 0.45);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.jrpg-hud-clock .tz-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e5b959, #b88f34);
+  color: #060709;
+  padding: 1px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+.jrpg-hud-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #ffd475;
+  background: #0d0608;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(229, 185, 89, 0.45);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* JRPG Status Counters */
+.jrpg-hud-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.jrpg-hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(8, 6, 8, 0.88);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 5px;
+  padding: 5px 10px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.rank-chip {
+  border-color: rgba(220, 38, 38, 0.55);
+  background: linear-gradient(180deg, rgba(38, 12, 14, 0.9) 0%, rgba(15, 6, 8, 0.95) 100%);
+}
+
+.chip-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #a1a1aa;
+  letter-spacing: 0.06em;
+}
+
+.chip-val {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.gold-num {
+  color: #ff4d4d;
+}
+
+.chip-unit {
+  font-size: 0.7rem;
+  color: #ff6b6b;
+}
+
+/* Stamina Gauge (Red & Black) */
+.jrpg-hud-stamina-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(8, 6, 8, 0.88);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  border-radius: 5px;
+  padding: 4px 10px;
+  min-width: 140px;
+}
+
+.stamina-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(229, 185, 89, 0.16);
-  flex-wrap: wrap;
-  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
 }
 
-.standalone-dashboard-footer {
-  text-align: center;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(229, 185, 89, 0.12);
+.stamina-label {
+  color: #ff4d4d;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stamina-val {
+  color: #d4d4d8;
+  font-size: 0.66rem;
+}
+
+.stamina-gauge-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(20, 8, 10, 0.95);
+  border-radius: 3px;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  overflow: hidden;
+}
+
+.stamina-gauge-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7f1d1d, #dc2626, #ff4d4d);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.7);
+}
+
+.currency-chip {
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.gem-chip {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Right Indicators */
+.jrpg-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jrpg-hud-clock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #f4f4f5;
+  background: rgba(8, 6, 8, 0.88);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.tz-tag {
+  font-size: 0.65rem;
+  color: #ff6b6b;
+}
+
+.jrpg-hud-beacon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #ff4d4d;
+  background: rgba(8, 6, 8, 0.88);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  padding: 5px 9px;
+  border-radius: 5px;
+}
+
+/* Category Filter Tabs (Red & Black) */
+.jrpg-category-tabs-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.jrpg-tab-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jrpg-category-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #180c0e 0%, #0c0607 100%);
+  border: 1.5px solid rgba(220, 38, 38, 0.35);
+  border-radius: 6px;
+  color: #d4d4d8;
   font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.jrpg-category-tab:hover {
+  border-color: #ff4d4d;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 14px rgba(220, 38, 38, 0.35);
+}
+
+.jrpg-category-tab.active {
+  background: linear-gradient(180deg, #dc2626 0%, #881337 100%);
+  border-color: #ff4d4d;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(220, 38, 38, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  font-weight: 800;
+}
+
+.jrpg-section-prompt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #ff4d4d;
+  background: rgba(12, 6, 8, 0.85);
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px dashed rgba(220, 38, 38, 0.4);
+}
+
+.prompt-arrow {
+  color: #ff3333;
+  font-size: 0.8rem;
+  animation: promptPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes promptPulse {
+  from { transform: translateX(0); }
+  to { transform: translateX(4px); }
+}
+
+/* The 4 JRPG Banner Cards Deck (Pure Red & Black Theme) */
+.jrpg-cards-deck {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .jrpg-cards-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual Card (Solid opaque black, Gold metallic bevel & trim) */
+.jrpg-banner-card {
+  position: relative;
+  background: #080507 !important; /* Fully opaque solid obsidian */
+  border: 1.5px solid rgba(220, 38, 38, 0.55);
+  border-radius: 8px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(229, 185, 89, 0.22);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  overflow: hidden;
+  text-align: left;
+}
+
+/* Hover: Magnifies slightly & glows with gold & crimson aura */
+.jrpg-banner-card:hover {
+  transform: scale(1.026) translateY(-4px);
+  border-color: #e5b959 !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(229, 185, 89, 0.35),
+    inset 0 0 20px rgba(220, 38, 38, 0.12);
+}
+
+.jrpg-banner-card:active {
+  transform: scale(0.995);
+}
+
+.card-inner-bevel {
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(229, 185, 89, 0.22);
+  border-radius: 5px;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+}
+
+.jrpg-banner-card:hover .card-inner-bevel {
+  border-color: rgba(229, 185, 89, 0.55);
+}
+
+/* Corner Brackets in Imperial Gold */
+.card-corner-ornament {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: #e5b959 !important;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 6px rgba(229, 185, 89, 0.35);
+}
+
+.jrpg-banner-card:hover .card-corner-ornament {
+  opacity: 1;
+  border-color: #ffd475 !important;
+  box-shadow: 0 0 12px rgba(255, 212, 117, 0.8);
+  transform: scale(1.18);
+}
+
+.corner-top-left {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.corner-top-right {
+  top: 6px;
+  right: 6px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+.corner-bottom-left {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+.corner-bottom-right {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+/* Card Content Column */
+.jrpg-card-main-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  z-index: 2;
+}
+
+/* Header Badges with Gold Accents */
+.jrpg-card-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.jrpg-card-badge-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jrpg-rarity-badge {
+  background: linear-gradient(135deg, #2a1608 0%, #160a03 100%) !important;
+  color: #ffd475 !important;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  border: 1px solid #e5b959 !important;
+}
+
+.jrpg-gate-seal {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #e4e4e7;
+  letter-spacing: 0.06em;
+}
+
+.jrpg-hanko-box {
+  background: rgba(220, 38, 38, 0.2);
+  color: #ffd475;
+  border: 1px solid rgba(229, 185, 89, 0.45);
+  font-family: var(--font-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.jrpg-card-status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffd475 !important;
+  background: #0d0608;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid rgba(229, 185, 89, 0.45);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Card Titles */
+.jrpg-card-title-block {
+  margin-bottom: 8px;
+}
+
+.jrpg-card-japanese-title {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.jrpg-card-description {
+  font-size: 0.84rem;
+  color: #d4d4d8;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+/* Action & Stats Bar with Gold Accents */
+.jrpg-card-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid rgba(229, 185, 89, 0.25);
+  margin-top: auto;
+  gap: 12px;
+}
+
+.jrpg-card-stats-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-preview-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  color: #a1a1aa;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+.stats-preview-value {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #ffd475 !important; /* Gold telemetry accent */
+  text-shadow: 0 0 10px rgba(255, 212, 117, 0.35);
+}
+
+/* Launch Button in Imperial Samurai Gold */
+.jrpg-deploy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #f5c862 0%, #d49b29 50%, #9e6f15 100%) !important;
+  border: 1px solid #ffe399 !important;
+  border-radius: 4px;
+  font-family: var(--font-serif);
+  font-size: 0.84rem;
+  font-weight: 800 !important;
+  color: #060709 !important;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 14px rgba(245, 200, 98, 0.45) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.jrpg-banner-card:hover .jrpg-deploy-btn {
+  background: linear-gradient(135deg, #ffdc85 0%, #e5ad35 50%, #b8831c 100%) !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 4px 22px rgba(245, 200, 98, 0.75) !important;
+  transform: translateX(3px);
+}
+
+/* Right Artwork Column with Polished Gold Frame */
+.jrpg-card-artwork-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.artwork-gold-frame {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), inset 0 0 10px rgba(0, 0, 0, 0.7);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid #d4af37 !important; /* Polished Gold Artwork Frame */
+}
+
+.jrpg-banner-card:hover .artwork-gold-frame {
+  transform: scale(1.03);
+  border-color: #ff4d4d;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9), 0 0 14px rgba(220, 38, 38, 0.35);
+}
+
+/* Minimal JRPG Command Footer */
+.jrpg-dashboard-footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(229, 185, 89, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-blade-quote {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  color: #ff4d4d;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.quote-en {
+  font-size: 0.8rem;
+  color: #a1a1aa;
   font-style: italic;
-  font-size: 0.9rem;
-  color: var(--gold-moon-dim);
+}
+
+.footer-system-info {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #d4af37;
+  letter-spacing: 0.1em;
+  font-weight: 700;
 }
 
 .app-shell-wrapper {

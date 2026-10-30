@@ -145,14 +145,14 @@ export const SpiritLens: React.FC<SpiritLensProps> = ({ onProcessComplete }) => 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <span className="hanko-seal">霊鏡</span>
+              <span className="hanko-seal">VISION</span>
               <span className="gold-badge">
                 <Scan size={12} />
                 CELESTIAL VISION & OBJECT DETECTION
               </span>
             </div>
             <h1 style={{ fontSize: '1.8rem', marginBottom: '6px' }}>
-              Spirit Lens <span style={{ color: 'var(--gold-moon)', fontWeight: 400 }}>| 霊鏡星眼</span>
+              Spirit Lens <span style={{ color: 'var(--gold-moon)', fontWeight: 400 }}>| Deep-Sky AI Vision</span>
             </h1>
             <p style={{ maxWidth: '720px', fontSize: '0.92rem' }}>
               Peer through the sacred lens to identify deep-sky nebulae, martial constellations, and wandering planets.

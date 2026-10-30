@@ -5,7 +5,6 @@ import { Watchtower } from './features/watchtower/Watchtower';
 import { CelestialScroll } from './features/scroll/CelestialScroll';
 import { SpiritLens } from './features/spirit-lens/SpiritLens';
 import { DojoDashboard } from './features/dojo/DojoDashboard';
-import { CursorTrail } from './components/CursorTrail';
 import { NavSectionId } from './types';
 
 export const App: React.FC = () => {
@@ -32,7 +31,6 @@ export const App: React.FC = () => {
   if (currentView === 'dashboard') {
     return (
       <div className="standalone-dashboard-wrapper">
-        <CursorTrail />
         <Dashboard onSelectOption={(option) => setCurrentView(option)} />
       </div>
     );
@@ -42,7 +40,6 @@ export const App: React.FC = () => {
   // From here the user can commute to ANY other section (or back to the Dashboard)
   return (
     <div className="app-shell-wrapper">
-      <CursorTrail />
       <AppShell activeView={currentView} onViewChange={(view) => setCurrentView(view)}>
         {renderActiveFeature()}
       </AppShell>

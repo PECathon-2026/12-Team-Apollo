@@ -37,46 +37,46 @@ export const AppShell: React.FC<AppShellProps> = ({
     {
       id: 'dashboard',
       label: '← Dashboard',
-      labelJapanese: '本陣',
-      romaji: 'Honjin',
+      labelJapanese: '',
+      romaji: 'Deck',
       subtitle: 'Command Hub',
-      description: 'Return to the central celestial command hub',
+      description: 'Return to the central command hub',
       iconName: 'LayoutDashboard',
     },
     {
       id: 'watchtower',
       label: 'Watchtower',
-      labelJapanese: '望楼',
-      romaji: 'Bōrō',
-      subtitle: 'ISS & Orbital Citadel',
+      labelJapanese: '',
+      romaji: 'Citadel',
+      subtitle: 'ISS & Orbital Tracking',
       description: 'Track satellites and celestial paths over feudal watchposts',
       iconName: 'Satellite',
     },
     {
       id: 'scroll',
       label: 'Celestial Scroll',
-      labelJapanese: '天巻',
-      romaji: 'Tenkan',
-      subtitle: 'Lunar Ephemeris & Lore',
-      description: 'SunCalc lunar illumination and ancient samurai chronicles',
+      labelJapanese: '',
+      romaji: 'Ephemeris',
+      subtitle: 'Lunar Ephemeris',
+      description: 'SunCalc lunar illumination and astronomical ephemeris',
       iconName: 'Scroll',
     },
     {
       id: 'spirit-lens',
       label: 'Spirit Lens',
-      labelJapanese: '霊鏡',
-      romaji: 'Reikyō',
-      subtitle: 'Deep-Sky Object Sight',
+      labelJapanese: '',
+      romaji: 'Vision',
+      subtitle: 'Deep-Sky AI Vision',
       description: 'Identify nebulae, star clusters, and clan constellations',
       iconName: 'Scan',
     },
     {
       id: 'dojo',
       label: 'Restoration Dojo',
-      labelJapanese: '道場',
-      romaji: 'Dōjō',
+      labelJapanese: '',
+      romaji: 'Dojo',
       subtitle: 'Astrophoto Denoising',
-      description: 'Katana blade sharpening and ink-wash noise reduction',
+      description: 'Katana blade sharpening and noise reduction',
       iconName: 'Sword',
     },
   ];
@@ -129,7 +129,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   }, []);
 
   const getIcon = (id: NavSectionId, isSelected: boolean): React.ReactNode => {
-    const color = isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-muted)';
+    const color = isSelected ? '#ff4d4d' : 'var(--washi-muted)';
     switch (id) {
       case 'dashboard':
         return <LayoutDashboard size={18} color={color} />;
@@ -166,9 +166,9 @@ export const AppShell: React.FC<AppShellProps> = ({
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          backgroundColor: 'rgba(7, 8, 11, 0.94)',
+          backgroundColor: 'rgba(7, 5, 8, 0.95)',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(229, 185, 89, 0.16)',
+          borderBottom: '1px solid rgba(220, 38, 38, 0.3)',
           height: 'var(--header-height)',
           display: 'flex',
           alignItems: 'center',
@@ -186,23 +186,23 @@ export const AppShell: React.FC<AppShellProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
           }}
-          title="Return to Dashboard (本陣へ戻る)"
+          title="Return to Dashboard"
         >
           <div
             style={{
               width: '42px',
               height: '42px',
               borderRadius: '50%',
-              backgroundColor: 'var(--ink-850)',
-              border: '2px solid var(--gold-moon)',
+              backgroundColor: '#120508',
+              border: '2px solid #ef4444',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 16px var(--gold-glow)',
+              boxShadow: '0 0 16px rgba(220, 38, 38, 0.5)',
               transition: 'transform 0.2s ease',
             }}
           >
-            <Moon size={22} color="var(--gold-moon-bright)" />
+            <Moon size={22} color="#ff4d4d" />
           </div>
 
           <div>
@@ -225,7 +225,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 TSUKUYOMI WATCH
               </span>
               <span className="hanko-seal" style={{ fontSize: '0.65rem' }}>
-                月読の監視
+                COMMAND
               </span>
             </div>
 
@@ -236,7 +236,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 letterSpacing: '0.04em',
               }}
             >
-              Samurai Celestial Guide & Astrophotography Suite
+              Orbital Celestial Deck & Astrophotography
             </div>
           </div>
         </div>
@@ -248,10 +248,10 @@ export const AppShell: React.FC<AppShellProps> = ({
             display: 'none',
             alignItems: 'center',
             gap: '6px',
-            background: 'rgba(13, 15, 21, 0.65)',
+            background: 'rgba(18, 6, 8, 0.85)',
             padding: '4px',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid rgba(229, 185, 89, 0.12)',
+            border: '1px solid rgba(220, 38, 38, 0.25)',
           }}
         >
           {navItems.map((item) => {
@@ -267,9 +267,9 @@ export const AppShell: React.FC<AppShellProps> = ({
                   gap: '8px',
                   padding: '8px 14px',
                   borderRadius: 'var(--radius-sm)',
-                  backgroundColor: isSelected ? 'rgba(229, 185, 89, 0.15)' : 'transparent',
-                  border: isSelected ? '1px solid var(--gold-border)' : '1px solid transparent',
-                  color: isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-silk)',
+                  backgroundColor: isSelected ? 'rgba(220, 38, 38, 0.25)' : 'transparent',
+                  border: isSelected ? '1px solid #ef4444' : '1px solid transparent',
+                  color: isSelected ? '#ffffff' : 'var(--washi-silk)',
                   fontFamily: 'var(--font-serif)',
                   fontSize: '0.86rem',
                   fontWeight: isSelected ? 700 : 500,
@@ -279,15 +279,6 @@ export const AppShell: React.FC<AppShellProps> = ({
               >
                 {getIcon(item.id, isSelected)}
                 <span>{item.label}</span>
-                <span
-                  style={{
-                    fontSize: '0.72rem',
-                    color: isSelected ? 'var(--gold-moon)' : 'var(--washi-muted)',
-                    marginLeft: '2px',
-                  }}
-                >
-                  {item.labelJapanese}
-                </span>
               </button>
             );
           })}
@@ -304,15 +295,15 @@ export const AppShell: React.FC<AppShellProps> = ({
               fontFamily: 'var(--font-mono)',
               fontSize: '0.82rem',
               color: 'var(--washi-silk)',
-              background: 'rgba(13, 15, 21, 0.7)',
+              background: 'rgba(18, 6, 8, 0.88)',
               padding: '6px 10px',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-ink)',
+              border: '1px solid rgba(220, 38, 38, 0.3)',
             }}
           >
-            <Clock size={14} color="var(--gold-moon)" />
+            <Clock size={14} color="#ef4444" />
             <span>{currentTimeJST || '00:00:00'}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>JST</span>
+            <span style={{ fontSize: '0.7rem', color: '#ff6b6b' }}>JST</span>
           </div>
 
           {/* Backend Status Dot */}
@@ -337,14 +328,14 @@ export const AppShell: React.FC<AppShellProps> = ({
                 borderRadius: '50%',
                 backgroundColor:
                   backendStatus === 'online'
-                    ? '#4e9b72'
+                    ? '#22c55e'
                     : backendStatus === 'standby'
-                    ? '#d63c3c'
-                    : 'var(--gold-moon)',
+                    ? '#ef4444'
+                    : '#ef4444',
                 boxShadow:
                   backendStatus === 'online'
-                    ? '0 0 8px rgba(78, 155, 114, 0.6)'
-                    : '0 0 8px rgba(214, 60, 60, 0.6)',
+                    ? '0 0 8px rgba(34, 197, 94, 0.6)'
+                    : '0 0 8px rgba(239, 68, 68, 0.6)',
               }}
             />
             <span
@@ -370,7 +361,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               background: 'transparent',
-              border: '1px solid var(--border-ink)',
+              border: '1px solid rgba(220, 38, 38, 0.3)',
               borderRadius: 'var(--radius-sm)',
               padding: '8px',
               color: 'var(--washi-white)',
@@ -391,7 +382,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(7, 8, 11, 0.98)',
+            backgroundColor: 'rgba(7, 5, 8, 0.98)',
             backdropFilter: 'blur(20px)',
             zIndex: 99,
             display: 'flex',
@@ -414,9 +405,9 @@ export const AppShell: React.FC<AppShellProps> = ({
                   justifyContent: 'space-between',
                   padding: '16px 20px',
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: isSelected ? 'rgba(229, 185, 89, 0.15)' : 'rgba(20, 23, 34, 0.6)',
-                  border: isSelected ? '1px solid var(--gold-moon)' : '1px solid var(--border-ink)',
-                  color: isSelected ? 'var(--gold-moon-bright)' : 'var(--washi-white)',
+                  backgroundColor: isSelected ? 'rgba(220, 38, 38, 0.25)' : 'rgba(18, 6, 8, 0.8)',
+                  border: isSelected ? '1px solid #ef4444' : '1px solid rgba(220, 38, 38, 0.25)',
+                  color: isSelected ? '#ffffff' : 'var(--washi-white)',
                   fontFamily: 'var(--font-serif)',
                   fontSize: '1rem',
                   fontWeight: 600,
@@ -433,7 +424,6 @@ export const AppShell: React.FC<AppShellProps> = ({
                     </div>
                   </div>
                 </div>
-                <span className="hanko-seal">{item.labelJapanese}</span>
               </button>
             );
           })}
@@ -454,13 +444,12 @@ export const AppShell: React.FC<AppShellProps> = ({
         {children}
       </main>
 
-      {/* Footer */}
+      {/* Universal Footer */}
       <footer
         style={{
-          borderTop: '1px solid rgba(229, 185, 89, 0.12)',
-          backgroundColor: 'rgba(7, 8, 11, 0.9)',
+          borderTop: '1px solid rgba(220, 38, 38, 0.25)',
           padding: '28px 24px',
-          marginTop: 'auto',
+          backgroundColor: 'rgba(7, 5, 8, 0.95)',
         }}
       >
         <div
@@ -479,7 +468,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               fontFamily: 'var(--font-serif)',
               fontStyle: 'italic',
               fontSize: '0.88rem',
-              color: 'var(--gold-moon-dim)',
+              color: '#ff4d4d',
               letterSpacing: '0.04em',
             }}
           >
