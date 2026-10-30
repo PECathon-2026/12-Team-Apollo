@@ -75,7 +75,7 @@ async function extractRealStarCentroids(
 
     candidates.sort((a, b) => b.lum - a.lum);
 
-    // Named lore templates for prominent detected stars
+    // Named lore profiles for prominent detected stars
     const starLoreProfiles = [
       {
         name: 'Alpha Celestial Luminary (天狼星 / Sirius Node)',

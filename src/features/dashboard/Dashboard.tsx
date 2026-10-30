@@ -39,14 +39,14 @@ interface OptionCardConfig {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
-  const [currentTimeJST, setCurrentTimeJST] = useState<string>('');
+  const [currentTimeIST, setCurrentTimeIST] = useState<string>('');
 
-  // Live JST Clock
+  // Live IST Clock
   useEffect(() => {
     const updateTime = () => {
-      setCurrentTimeJST(
-        new Date().toLocaleTimeString('ja-JP', {
-          timeZone: 'Asia/Tokyo',
+      setCurrentTimeIST(
+        new Date().toLocaleTimeString('en-IN', {
+          timeZone: 'Asia/Kolkata',
           hour12: false,
           hour: '2-digit',
           minute: '2-digit',
@@ -221,7 +221,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* JST Clock */}
+          {/* IST Clock */}
           <div
             style={{
               display: 'flex',
@@ -237,8 +237,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
             }}
           >
             <Clock size={14} color="var(--gold-moon)" />
-            <span>{currentTimeJST || '00:00:00'}</span>
-            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>JST</span>
+            <span>{currentTimeIST || '00:00:00'}</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>IST</span>
           </div>
 
           {/* Beacon indicator */}

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { issRouter } from './routes/iss';
 import { restoreRouter } from './routes/restore';
+import { newsRouter } from './routes/news';
 
 // Load environment configuration
 dotenv.config();
@@ -35,6 +36,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 // Mount modular feature routes
 app.use('/api/iss', issRouter);
 app.use('/api/restore', restoreRouter);
+app.use('/api/news', newsRouter);
 
 // Start server with port conflict handling
 const server = app.listen(PORT, '0.0.0.0', () => {
