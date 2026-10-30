@@ -147,12 +147,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
 
       {/* 2. Top Header: Fully Opaque, Centered TSUKUYOMI WATCH with Gold Accents */}
       <header className="jrpg-top-hud">
-        {/* Left Wing: Live JST Telemetry */}
+        {/* Left Wing: Live IST Telemetry */}
         <div className="jrpg-hud-wing-left">
           <div className="jrpg-hud-clock">
             <Clock size={14} color="#ffd475" />
-            <span>{currentTimeJST || '00:00:00'}</span>
-            <span className="tz-tag">JST</span>
+            <span>{currentTimeIST || '00:00:00'}</span>
+            <span className="tz-tag">IST</span>
           </div>
         </div>
 
