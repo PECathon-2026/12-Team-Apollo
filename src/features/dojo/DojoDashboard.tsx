@@ -1,303 +1,450 @@
 import React, { useState } from 'react';
-import { Sparkles, Sliders, Activity, RefreshCw, Wand2, Zap } from 'lucide-react';
-import { BeforeAfterSlider } from './BeforeAfterSlider';
-import { RestorationPreset, RestorationResult } from '../../types';
+import {
+  Sparkles,
+  Download,
+  PlusCircle,
+  Wand2,
+  Telescope,
+  RefreshCw,
+  Home,
+  } from 'lucide-react';
+import { DojoLanding } from './DojoLanding';
+import { ImageUploader, UploadedImageData } from './ImageUploader';
+import { RestorationControls } from './RestorationControls';
+import { BeforeAfterViewer } from './BeforeAfterViewer';
+import { ProcessingStatus } from './ProcessingStatus';
+import { RestorationMetadata } from './RestorationMetadata';
+import { RestorationParameters, RestorationResult } from '../../types';
+
+// Default reference Messier 42 noisy sample for quick demonstration
+const SAMPLE_NOISY_URL =
+  'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40';
 
 export const DojoDashboard: React.FC = () => {
-  const [preset, setPreset] = useState<RestorationPreset>('samurai_clarity');
-  const [noiseReduction, setNoiseReduction] = useState<number>(75);
-  const [sharpness, setSharpness] = useState<number>(85);
-  const [contrastBoost, setContrastBoost] = useState<number>(60);
+  const [activeTab, setActiveTab] = useState<'landing' | 'dojo'>('landing');
+  const [selectedMode, setSelectedMode] = useState<'scientific' | 'ai' | 'demo'>('scientific');
+
+  const [uploadedImage, setUploadedImage] = useState<UploadedImageData | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [restorationResult, setRestorationResult] = useState<RestorationResult | null>({
-    id: 'dojo-init-001',
-    status: 'completed',
-    originalImageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40',
-    restoredImageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=90',
-    parameters: {
-      preset: 'samurai_clarity',
-      noiseReductionLevel: 75,
-      contrastBoost: 60,
-      sharpness: 85,
-      starDehalo: true,
-      backgroundBlackLevel: 45,
-      colorSaturation: 65,
-    },
-    metrics: {
-      snrImprovementDb: 18.4,
-      starsRecoveredCount: 1420,
-      backgroundNoiseReducedPercent: 88,
-      processingTimeMs: 340,
-      entropyScore: 0.94,
-    },
-    completedAt: new Date().toISOString(),
-    alchemistNotes: 'Sumi-e ink noise removed. Blade-sharp stellar profiles honed to Katana precision.',
+  const [processingError, setProcessingError] = useState<string | null>(null);
+
+  const [parameters, setParameters] = useState<RestorationParameters>({
+    preset: 'samurai_clarity',
+    noiseReductionLevel: 75,
+    contrastBoost: 60,
+    sharpness: 85,
+    starDehalo: true,
+    backgroundBlackLevel: 45,
+    colorSaturation: 65,
   });
 
-  const handleRunRestoration = async () => {
-    setIsProcessing(true);
+  const [restorationResult, setRestorationResult] = useState<RestorationResult | null>(null);
+
+  // Preload Reference Sample Exposure
+  const handleLoadSample = async () => {
+    setActiveTab('dojo');
     try {
+      const response = await fetch(SAMPLE_NOISY_URL);
+      const blob = await response.blob();
+      const file = new File([blob], 'Messier_42_Raw_Exposure.jpg', { type: 'image/jpeg' });
+      setUploadedImage({
+        file,
+        previewUrl: SAMPLE_NOISY_URL,
+        name: 'Messier_42_Raw_Exposure.jpg',
+        sizeKb: Math.round(blob.size / 1024) || 380,
+        width: 1200,
+        height: 800,
+        isFits: false,
+      });
+      setRestorationResult(null);
+      setProcessingError(null);
+    } catch {
+      // Fallback if network blocked
+      setUploadedImage({
+        file: new File([], 'Messier_42_Raw_Exposure.jpg', { type: 'image/jpeg' }),
+        previewUrl: SAMPLE_NOISY_URL,
+        name: 'Messier_42_Raw_Exposure.jpg',
+        sizeKb: 380,
+        width: 1200,
+        height: 800,
+        isFits: false,
+      });
+    }
+  };
+
+  // Run Image Restoration
+  const handleExecuteRestoration = async () => {
+    if (!uploadedImage) return;
+
+    setIsProcessing(true);
+    setProcessingError(null);
+
+    try {
+      const formData = new FormData();
+      if (uploadedImage.file && uploadedImage.file.size > 0) {
+        formData.append('imageFile', uploadedImage.file);
+      }
+      formData.append('preset', parameters.preset);
+      formData.append('mode', selectedMode);
+      formData.append('parameters', JSON.stringify(parameters));
+      formData.append('imageUrl', uploadedImage.previewUrl);
+
       const response = await fetch('/api/restore', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40',
-          preset,
-          parameters: {
-            noiseReductionLevel: noiseReduction,
-            contrastBoost,
-            sharpness,
-            starDehalo: true,
-          },
-        }),
+        body: formData,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setRestorationResult(data);
-      } else {
-        // Fallback local simulation if backend unavailable
-        simulateLocalRestoration();
+      if (!response.ok) {
+        let errMessage = `Server error (${response.status})`;
+        try {
+          const errData = await response.json();
+          if (errData.error) errMessage = errData.error;
+        } catch {
+          // ignore json parse error
+        }
+        throw new Error(errMessage);
       }
-    } catch {
-      simulateLocalRestoration();
+
+      const data: RestorationResult = await response.json();
+      setRestorationResult(data);
+    } catch (err: any) {
+      console.error('Restoration request failed:', err);
+      setProcessingError(
+        err.message || 'Restoration failed. Please check backend connection or switch to Scientific Engine / Demo mode.'
+      );
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const simulateLocalRestoration = () => {
-    setRestorationResult({
-      id: `dojo-sim-${Date.now()}`,
-      status: 'completed',
-      originalImageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=40',
-      restoredImageUrl: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=90',
-      parameters: {
-        preset,
-        noiseReductionLevel: noiseReduction,
-        contrastBoost,
-        sharpness,
-        starDehalo: true,
-        backgroundBlackLevel: 50,
-        colorSaturation: 60,
-      },
-      metrics: {
-        snrImprovementDb: +(15 + Math.random() * 5).toFixed(1),
-        starsRecoveredCount: Math.floor(1200 + Math.random() * 400),
-        backgroundNoiseReducedPercent: Math.floor(80 + Math.random() * 15),
-        processingTimeMs: Math.floor(250 + Math.random() * 150),
-        entropyScore: 0.95,
-      },
-      completedAt: new Date().toISOString(),
-      alchemistNotes: 'Local Dojo algorithm applied: Ink wash clarity restoration successful.',
-    });
+  // Fallback to demo mode if requested
+  const handleFallbackToDemo = async () => {
+    setSelectedMode('demo');
+    setIsProcessing(true);
+    setProcessingError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('mode', 'demo');
+      formData.append('isDemo', 'true');
+      formData.append('preset', parameters.preset);
+      formData.append('parameters', JSON.stringify(parameters));
+      if (uploadedImage) {
+        formData.append('imageUrl', uploadedImage.previewUrl);
+      }
+
+      const res = await fetch('/api/restore', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setRestorationResult(data);
+      }
+    } catch (e: any) {
+      setProcessingError(`Demo simulation failed: ${e.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // Reset to brand-new restoration
+  const handleResetWorkflow = () => {
+    setUploadedImage(null);
+    setRestorationResult(null);
+    setProcessingError(null);
+  };
+
+  // Download Image Helper
+  const downloadImage = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Header Banner */}
-      <div className="sumi-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+      {/* Navigation Sub-Header Bar */}
+      <div className="sumi-card" style={{ padding: '16px 24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
               <span className="hanko-seal">道場</span>
               <span className="gold-badge">
                 <Sparkles size={12} />
-                IMAGE ALCHEMY & DENOISING
+                ASTRONOMICAL IMAGE RESTORATION & CLARITY CHAMBER
               </span>
             </div>
-            <h1 style={{ fontSize: '1.8rem', marginBottom: '6px' }}>
+            <h1 style={{ fontSize: '1.75rem', margin: 0 }}>
               Restoration Dojo <span style={{ color: 'var(--gold-moon)', fontWeight: 400 }}>| 修復道場</span>
             </h1>
-            <p style={{ maxWidth: '720px', fontSize: '0.92rem' }}>
-              Hone raw night-sky exposures using deep ink-wash restoration algorithms. Polish stellar light,
-              slice cosmic noise like a katana blade, and recover celestial details lost in murky atmospheres.
-            </p>
           </div>
 
-          <button
-            onClick={handleRunRestoration}
-            disabled={isProcessing}
-            className="btn-samurai-gold"
-          >
-            {isProcessing ? (
-              <>
-                <RefreshCw size={16} className="spin-animation" />
-                Forging Light...
-              </>
-            ) : (
-              <>
-                <Wand2 size={16} />
-                Execute Katana Restoration
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Grid: Interactive Slider + Controls */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-        {/* Left Column: Interactive Before/After Component */}
-        <div style={{ gridColumn: 'span 2', minWidth: '300px' }}>
-          <div className="sumi-card" style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <h3 style={{ fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Activity size={18} color="var(--gold-moon)" />
-                Interactive Blade Comparison Slider
-              </h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--washi-muted)' }}>
-                Drag katana emblem to inspect before & after
-              </span>
-            </div>
-
-            <BeforeAfterSlider
-              beforeImage={restorationResult?.originalImageUrl}
-              afterImage={restorationResult?.restoredImageUrl}
-            />
-
-            {/* Metrics Row */}
-            {restorationResult && (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                  gap: '12px',
-                  marginTop: '16px',
-                }}
-              >
-                <div className="metric-pill">
-                  <span className="label">SNR Gain</span>
-                  <span className="value">+{restorationResult.metrics.snrImprovementDb} dB</span>
-                </div>
-                <div className="metric-pill">
-                  <span className="label">Stars Recovered</span>
-                  <span className="value">{restorationResult.metrics.starsRecoveredCount.toLocaleString()}</span>
-                </div>
-                <div className="metric-pill">
-                  <span className="label">Noise Reduced</span>
-                  <span className="value">{restorationResult.metrics.backgroundNoiseReducedPercent}%</span>
-                </div>
-                <div className="metric-pill">
-                  <span className="label">Process Time</span>
-                  <span className="value">{restorationResult.metrics.processingTimeMs} ms</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Alchemy Controls */}
-        <div>
-          <div className="sumi-card" style={{ height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '18px' }}>
-              <Sliders size={18} color="var(--gold-moon)" />
-              <h3 style={{ fontSize: '1.1rem' }}>Sumi Alchemy Controls</h3>
-            </div>
-
-            {/* Preset Selector */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--washi-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Katana Preset
-              </label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {[
-                  { id: 'samurai_clarity', name: 'Samurai Clarity (侍の明瞭)', desc: 'Balanced sharpening and stellar contrast' },
-                  { id: 'ink_denoise', name: 'Sumi-e Deep Denoise (墨流し)', desc: 'Aggressive atmospheric grain removal' },
-                  { id: 'nebula_deep_ink', name: 'Nebula Veil (星雲の衣)', desc: 'Optimized for faint dust bands and hydrogen emission' },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setPreset(item.id as RestorationPreset)}
-                    style={{
-                      textAlign: 'left',
-                      padding: '10px 14px',
-                      borderRadius: 'var(--radius-sm)',
-                      background: preset === item.id ? 'rgba(229, 185, 89, 0.12)' : 'rgba(13, 15, 21, 0.6)',
-                      border: preset === item.id ? '1px solid var(--gold-moon)' : '1px solid var(--border-ink)',
-                      color: preset === item.id ? 'var(--gold-moon-bright)' : 'var(--washi-silk)',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{item.name}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--washi-muted)', marginTop: '2px' }}>{item.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Parameter Sliders */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--washi-silk)' }}>Ink Denoise Level</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--gold-moon)' }}>{noiseReduction}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={noiseReduction}
-                  onChange={(e) => setNoiseReduction(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--gold-moon)' }}
-                />
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--washi-silk)' }}>Blade Sharpness</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--gold-moon)' }}>{sharpness}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={sharpness}
-                  onChange={(e) => setSharpness(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--gold-moon)' }}
-                />
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '6px' }}>
-                  <span style={{ color: 'var(--washi-silk)' }}>Deep Void Contrast</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--gold-moon)' }}>{contrastBoost}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={contrastBoost}
-                  onChange={(e) => setContrastBoost(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: 'var(--gold-moon)' }}
-                />
-              </div>
-            </div>
-
-            {/* Alchemist note */}
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button
+              onClick={() => setActiveTab(activeTab === 'landing' ? 'dojo' : 'landing')}
               style={{
-                marginTop: '22px',
-                padding: '12px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'rgba(7, 8, 11, 0.7)',
-                border: '1px dashed rgba(229, 185, 89, 0.25)',
-                fontSize: '0.78rem',
-                color: 'var(--washi-parchment)',
                 display: 'flex',
-                gap: '8px',
-                alignItems: 'flex-start',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 14px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'rgba(20, 23, 34, 0.7)',
+                border: '1px solid var(--border-ink)',
+                color: 'var(--washi-silk)',
+                fontSize: '0.84rem',
+                cursor: 'pointer',
               }}
             >
-              <Zap size={15} color="var(--gold-moon)" style={{ flexShrink: 0, marginTop: '2px' }} />
-              <div>
-                <strong style={{ color: 'var(--gold-moon-bright)' }}>Sensei's Guidance:</strong> When shooting
-                under light-polluted castles, increase Void Contrast to 65% and maintain Star Dehalo to prevent blooming.
-              </div>
-            </div>
+              {activeTab === 'landing' ? (
+                <>
+                  <Wand2 size={15} color="var(--gold-moon)" />
+                  <span>Enter Restoration Chamber</span>
+                </>
+              ) : (
+                <>
+                  <Home size={15} color="var(--gold-moon)" />
+                  <span>Dojo Overview & Ethos</span>
+                </>
+              )}
+            </button>
+
+            {uploadedImage && activeTab === 'dojo' && (
+              <button
+                onClick={handleExecuteRestoration}
+                disabled={isProcessing}
+                className="btn-samurai-gold"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '9px 18px',
+                  fontSize: '0.86rem',
+                }}
+              >
+                {isProcessing ? (
+                  <>
+                    <RefreshCw size={15} className="spin-animation" />
+                    Forging Light...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 size={15} />
+                    Execute Katana Restoration
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* VIEW 1: LANDING SCREEN */}
+      {activeTab === 'landing' && (
+        <DojoLanding
+          onBeginRestoration={() => setActiveTab('dojo')}
+          onLoadSample={handleLoadSample}
+        />
+      )}
+
+      {/* VIEW 2: RESTORATION WORKSPACE */}
+      {activeTab === 'dojo' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Uploader Section */}
+          <ImageUploader
+            currentImage={uploadedImage}
+            onImageSelected={(data) => {
+              setUploadedImage(data);
+              setRestorationResult(null);
+              setProcessingError(null);
+            }}
+            onClear={() => {
+              setUploadedImage(null);
+              setRestorationResult(null);
+            }}
+            onRestoreClick={handleExecuteRestoration}
+            isProcessing={isProcessing}
+          />
+
+          {/* Processing Status Banner */}
+          <ProcessingStatus
+            isProcessing={isProcessing}
+            error={processingError}
+            onRetry={handleExecuteRestoration}
+            onFallbackToDemo={handleFallbackToDemo}
+          />
+
+          {/* Main Grid: Comparison Slider / Viewer + Controls */}
+          {restorationResult && !isProcessing && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+              {/* Left Column (2 spans): Interactive Before/After Viewer */}
+              <div style={{ gridColumn: 'span 2', minWidth: '300px' }}>
+                <div className="sumi-card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="hanko-seal">研磨済</span>
+                      <h3 style={{ fontSize: '1.05rem', color: 'var(--washi-white)' }}>
+                        Interactive Katana Comparison Chamber
+                      </h3>
+                    </div>
+
+                    {/* Download & Reset Action Buttons */}
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        onClick={() =>
+                          downloadImage(
+                            restorationResult.restoredImageUrl,
+                            `Tsukuyomi_Restored_${Date.now()}.png`
+                          )
+                        }
+                        className="btn-samurai-gold"
+                        style={{
+                          padding: '6px 12px',
+                          fontSize: '0.78rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                        title="Download Restored Image"
+                      >
+                        <Download size={13} />
+                        Download Restored
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          downloadImage(
+                            restorationResult.originalImageUrl,
+                            `Tsukuyomi_Raw_${Date.now()}.png`
+                          )
+                        }
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: 'rgba(20, 23, 34, 0.7)',
+                          border: '1px solid var(--border-ink)',
+                          color: 'var(--washi-silk)',
+                          fontSize: '0.78rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                        title="Download Raw Original"
+                      >
+                        <Download size={13} />
+                        Download Raw
+                      </button>
+
+                      <button
+                        onClick={handleResetWorkflow}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: 'var(--radius-sm)',
+                          backgroundColor: 'rgba(20, 23, 34, 0.7)',
+                          border: '1px solid var(--border-ink)',
+                          color: 'var(--washi-silk)',
+                          fontSize: '0.78rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                        title="Start New Restoration"
+                      >
+                        <PlusCircle size={13} />
+                        New Image
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Interactive Viewer Component */}
+                  <BeforeAfterViewer
+                    originalImage={restorationResult.originalImageUrl}
+                    restoredImage={restorationResult.restoredImageUrl}
+                    candidateDetections={restorationResult.candidateDetections || []}
+                    imageWidth={restorationResult.metadata?.restoredDimensions.width || 1200}
+                    imageHeight={restorationResult.metadata?.restoredDimensions.height || 800}
+                  />
+
+                  {/* Metadata & Quality Report */}
+                  <div style={{ marginTop: '20px' }}>
+                    <RestorationMetadata result={restorationResult} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Sumi Alchemy Controls */}
+              <div>
+                <RestorationControls
+                  parameters={parameters}
+                  onChangeParameters={setParameters}
+                  selectedMode={selectedMode}
+                  onChangeMode={setSelectedMode}
+                  disabled={isProcessing}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* When no restoration has run yet but image is uploaded */}
+          {!restorationResult && !isProcessing && uploadedImage && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ gridColumn: 'span 2' }}>
+                <div
+                  className="sumi-card"
+                  style={{
+                    padding: '36px 24px',
+                    textAlign: 'center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}
+                >
+                  <Telescope size={36} color="var(--gold-moon)" />
+                  <h3 style={{ fontSize: '1.2rem', color: 'var(--washi-white)' }}>
+                    Exposure Ready for Restoration
+                  </h3>
+                  <p style={{ maxWidth: '520px', fontSize: '0.88rem', color: 'var(--washi-silk)' }}>
+                    Tune the alchemy parameters in the right panel if desired, then click &quot;Execute Katana
+                    Restoration&quot; to deconvolve atmospheric seeing and hone stellar clarity.
+                  </p>
+                  <button
+                    onClick={handleExecuteRestoration}
+                    className="btn-samurai-gold"
+                    style={{
+                      marginTop: '8px',
+                      padding: '12px 24px',
+                      fontSize: '0.94rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <Wand2 size={16} />
+                    Execute Katana Restoration
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <RestorationControls
+                  parameters={parameters}
+                  onChangeParameters={setParameters}
+                  selectedMode={selectedMode}
+                  onChangeMode={setSelectedMode}
+                  disabled={isProcessing}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

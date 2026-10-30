@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import SunCalc from 'suncalc';
 import {
-  Bell, BellOff, Bookmark, Calendar, ChevronLeft, ChevronRight,
-  ExternalLink, Feather, List, MapPin, Moon, RefreshCw,
-  Scroll, ShieldAlert, Sparkles, Star,
-} from 'lucide-react';
+  Bell, BellOff, Bookmark, ChevronLeft, ChevronRight,
+  Feather, } from 'lucide-react';
 import type { CelestialEvent } from '../../types';
 import './CelestialScroll.css';
 
@@ -17,7 +15,7 @@ type Category =
 
 type Origin = 'curated' | 'calculated' | 'launch-library-2' | 'n2yo';
 
-type ScrollEvent = Omit<CelestialEvent, 'id'> & {
+type ScrollEvent = Omit<CelestialEvent, 'id' | 'type'> & {
   id: string;
   type: Category;
   eventDate: string;
@@ -548,12 +546,12 @@ export const CelestialScroll: React.FC = () => {
   };
 
   const toggleAlerts = async () => {
-    if (!alerts && !('Notification' in window)) { window.alert('Browser notifications unsupported.'); return; }
+    if (!alerts && !('Notification' in window)) { (window as any).alert('Browser notifications unsupported.'); return; }
     if (!alerts && Notification.permission === 'default') {
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') return;
     }
-    if (!alerts && Notification.permission !== 'granted') { window.alert('Allow notifications in settings.'); return; }
+    if (!alerts && Notification.permission !== 'granted') { (window as any).alert('Allow notifications in settings.'); return; }
     setAlerts((current) => { const next = !current; writeJSON(ALERT_KEY, next); return next; });
   };
 
@@ -597,7 +595,7 @@ export const CelestialScroll: React.FC = () => {
       <header className="cs-header">
         <h1>Celestial Scroll 天文巻物</h1>
         <h2>LUNAR EPHEMERIS</h2>
-        <p>A Japanese-inspired guide to the Moon, meteor showers, eclipses, spaceflight and the celestial events above you.</p>
+        <p>A Japanese-inspired guide to the meteor showers, eclipses, spaceflight and the celestial events above you.</p>
         <p><strong>ALL TIMES IST · UTC+05:30</strong></p>
         <button onClick={toggleAlerts}>{alerts ? <Bell /> : <BellOff />} {alerts ? 'Alerts enabled' : 'Enable alerts'}</button>
       </header>

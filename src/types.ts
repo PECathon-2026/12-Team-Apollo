@@ -165,6 +165,34 @@ export interface RestorationMetrics {
   entropyScore: number;
 }
 
+export interface CandidateObjectDetection {
+  id: string;
+  type: 'candidate_star' | 'candidate_nebula' | 'candidate_cluster' | 'candidate_extended';
+  label: string;
+  japaneseLabel: string;
+  xPercent: number; // 0 - 100% relative to image width
+  yPercent: number; // 0 - 100% relative to image height
+  radiusPixels: number;
+  peakBrightness: number; // 0 - 255
+  confidence: number;
+  notes: string;
+}
+
+export interface RestorationMetadata {
+  originalDimensions: { width: number; height: number };
+  restoredDimensions: { width: number; height: number };
+  originalFileSizeKb: number;
+  restoredFileSizeKb: number;
+  format: string;
+  method: 'scientific_engine' | 'ai_neural_model' | 'demonstration_mode';
+  methodLabel: string;
+  processingTimeMs: number;
+  algorithmSummary: string;
+  metricsExplanation: string;
+  candidateDetections?: CandidateObjectDetection[];
+  isDemonstration?: boolean;
+}
+
 export interface RestorationResult {
   id: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
@@ -174,6 +202,8 @@ export interface RestorationResult {
   metrics: RestorationMetrics;
   completedAt: string;
   alchemistNotes: string;
+  candidateDetections?: CandidateObjectDetection[];
+  metadata?: RestorationMetadata;
 }
 
 export interface BeforeAfterComparison {
