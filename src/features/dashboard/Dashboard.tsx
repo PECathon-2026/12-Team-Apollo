@@ -35,14 +35,14 @@ interface MinimalCardConfig {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
-  const [currentTimeJST, setCurrentTimeJST] = useState<string>('');
+  const [currentTimeIST, setCurrentTimeIST] = useState<string>('');
 
-  // Live JST Clock
+  // Live IST Clock
   useEffect(() => {
     const updateTime = () => {
-      setCurrentTimeJST(
-        new Date().toLocaleTimeString('ja-JP', {
-          timeZone: 'Asia/Tokyo',
+      setCurrentTimeIST(
+        new Date().toLocaleTimeString('en-IN', {
+          timeZone: 'Asia/Kolkata',
           hour12: false,
           hour: '2-digit',
           minute: '2-digit',

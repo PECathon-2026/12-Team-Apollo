@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-interface SparkleParticle {
+interface Particle {
   x: number;
   y: number;
   vx: number;
@@ -9,24 +9,26 @@ interface SparkleParticle {
   alpha: number;
   decay: number;
   color: string;
+  glowColor: string;
+  isStar: boolean;
   rotation: number;
   rotationSpeed: number;
-  shape: 'star' | 'circle';
 }
 
-const GLITTER_COLORS = [
-  '#ffd700', // Bright Gold
-  '#ffe066', // Sunlit Gold
-  '#fff3bf', // Pale Moon Gold
-  '#ffffff', // Diamond White
-  '#e5b959', // Celestial Gold
-  '#ffd475', // Golden Shimmer
-  '#ff8787', // Faint Vermilion Glint
-  '#63e6be', // Faint Jade Glint
+// Tsukuyomi Watch palette: Antique Celestial Gold, Moonlit Silver/Washi, and Restrained Vermilion
+const TSUSKUYOMI_PARTICLE_COLORS = [
+  { fill: '#f7d774', glow: 'rgba(247, 215, 116, 0.45)' }, // Celestial Gold
+  { fill: '#e5c158', glow: 'rgba(229, 193, 88, 0.4)' },  // Moon Gold
+  { fill: '#ffd700', glow: 'rgba(255, 215, 0, 0.45)' },  // Pure Gold
+  { fill: '#fff8db', glow: 'rgba(255, 248, 219, 0.5)' }, // Moonlit Washi
+  { fill: '#ffffff', glow: 'rgba(255, 255, 255, 0.45)' }, // Star Diamond White
+  { fill: '#c53d34', glow: 'rgba(197, 61, 52, 0.35)' },  // Restrained Vermilion
+  { fill: '#d9534f', glow: 'rgba(217, 83, 79, 0.35)' },  // Cinnabar Glint
 ];
 
 /**
- * High-performance canvas-based celestial glitter cursor trail
+ * Ultra-smooth, zero-lag celestial cursor trail.
+ * Avoids expensive canvas shadowBlur to guarantee high 60-120 FPS performance.
  */
 export const CursorTrail: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -34,17 +36,21 @@ export const CursorTrail: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     let animationFrameId: number;
-    let particles: SparkleParticle[] = [];
+    let particles: Particle[] = [];
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
     };
 
@@ -53,131 +59,124 @@ export const CursorTrail: React.FC = () => {
 
     let lastX = -1;
     let lastY = -1;
+    let lastTime = 0;
 
-    const addParticles = (x: number, y: number, count = 3) => {
+    const addParticles = (x: number, y: number, count: number) => {
+      // Keep maximum particle count bounded to ensure zero lag
+      if (particles.length > 55) {
+        particles.splice(0, particles.length - 45);
+      }
+
       for (let i = 0; i < count; i++) {
+        const palette =
+          TSUSKUYOMI_PARTICLE_COLORS[
+            Math.floor(Math.random() * TSUSKUYOMI_PARTICLE_COLORS.length)
+          ];
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 1.6 + 0.4;
-        const size = Math.random() * 3.5 + 1.5;
-        const color = GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)];
-        const shape: 'star' | 'circle' = Math.random() > 0.45 ? 'star' : 'circle';
+        const speed = Math.random() * 1.4 + 0.3;
+        const isStar = Math.random() > 0.6;
+        const size = Math.random() * 2.8 + 1.2;
 
         particles.push({
-          x: x + (Math.random() - 0.5) * 6,
-          y: y + (Math.random() - 0.5) * 6,
+          x: x + (Math.random() - 0.5) * 4,
+          y: y + (Math.random() - 0.5) * 4,
           vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed + 0.35, // gentle celestial drift downwards
+          vy: Math.sin(angle) * speed + 0.25, // Gentle celestial falling drift
           size,
-          alpha: 1.0,
-          decay: Math.random() * 0.022 + 0.018, // smooth ~45 frame fade
-          color,
+          alpha: 0.95,
+          decay: Math.random() * 0.028 + 0.022, // Fades smoothly in ~35-45 frames
+          color: palette.fill,
+          glowColor: palette.glow,
+          isStar,
           rotation: Math.random() * Math.PI,
-          rotationSpeed: (Math.random() - 0.5) * 0.2,
-          shape,
+          rotationSpeed: (Math.random() - 0.5) * 0.15,
         });
       }
     };
 
     const handleMouseMove = (e: MouseEvent) => {
+      const now = performance.now();
       const x = e.clientX;
       const y = e.clientY;
 
       if (lastX === -1) {
         lastX = x;
         lastY = y;
+        lastTime = now;
+        return;
       }
 
+      // Throttle by distance & minimum time (12ms) to prevent event storm
       const dist = Math.hypot(x - lastX, y - lastY);
-      // Spawn more sparkles if moving swiftly
-      const emitCount = Math.min(Math.floor(dist / 6) + 2, 7);
+      if (dist < 8 && now - lastTime < 16) return;
 
+      const emitCount = Math.min(Math.floor(dist / 14) + 1, 3);
       addParticles(x, y, emitCount);
 
       lastX = x;
       lastY = y;
+      lastTime = now;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touch = e.touches[0];
-        addParticles(touch.clientX, touch.clientY, 3);
+        addParticles(touch.clientX, touch.clientY, 2);
       }
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
-    // Draw classical 4-point Japanese celestial sparkle star
-    const drawStar = (
-      context: CanvasRenderingContext2D,
-      cx: number,
-      cy: number,
-      spikes: number,
-      outerRadius: number,
-      innerRadius: number
-    ) => {
-      let rot = (Math.PI / 2) * 3;
-      let x = cx;
-      let y = cy;
-      const step = Math.PI / spikes;
-
-      context.beginPath();
-      context.moveTo(cx, cy - outerRadius);
-      for (let i = 0; i < spikes; i++) {
-        x = cx + Math.cos(rot) * outerRadius;
-        y = cy + Math.sin(rot) * outerRadius;
-        context.lineTo(x, y);
-        rot += step;
-
-        x = cx + Math.cos(rot) * innerRadius;
-        y = cy + Math.sin(rot) * innerRadius;
-        context.lineTo(x, y);
-        rot += step;
-      }
-      context.lineTo(cx, cy - outerRadius);
-      context.closePath();
-      context.fill();
+    // Draw diamond 4-point Japanese stardust sparkle without expensive shadow blur
+    const drawDiamondStar = (cx: number, cy: number, r: number) => {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - r * 1.6);
+      ctx.quadraticCurveTo(cx, cy, cx + r * 1.6, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy + r * 1.6);
+      ctx.quadraticCurveTo(cx, cy, cx - r * 1.6, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy - r * 1.6);
+      ctx.closePath();
+      ctx.fill();
     };
 
     const render = () => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.clearRect(0, 0, width, height);
 
-      for (let i = particles.length - 1; i >= 0; i--) {
+      const len = particles.length;
+      for (let i = len - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
         p.alpha -= p.decay;
+        p.size *= 0.98;
         p.rotation += p.rotationSpeed;
-        p.size *= 0.985; // subtle shrink
 
-        if (p.alpha <= 0 || p.size <= 0.3) {
+        if (p.alpha <= 0.02 || p.size <= 0.4) {
           particles.splice(i, 1);
           continue;
         }
 
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha);
+        const alpha = Math.max(0, p.alpha);
+
+        // Faint outer celestial aura (fast circular halo, NO shadowBlur!)
+        ctx.globalAlpha = alpha * 0.22;
+        ctx.fillStyle = p.glowColor;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner bright stardust core
+        ctx.globalAlpha = alpha;
         ctx.fillStyle = p.color;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
 
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-
-        if (p.shape === 'star') {
-          drawStar(ctx, 0, 0, 4, p.size * 1.8, p.size * 0.4);
+        if (p.isStar) {
+          drawDiamondStar(p.x, p.y, p.size);
         } else {
           ctx.beginPath();
-          ctx.arc(0, 0, p.size * 0.9, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fill();
         }
-
-        ctx.restore();
-      }
-
-      // Memory safeguard
-      if (particles.length > 250) {
-        particles = particles.slice(-200);
       }
 
       animationFrameId = requestAnimationFrame(render);

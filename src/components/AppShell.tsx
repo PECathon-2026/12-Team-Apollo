@@ -26,7 +26,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const [activeSection, setActiveSection] = useState<NavSectionId>(activeView);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'standby'>('checking');
-  const [currentTimeJST, setCurrentTimeJST] = useState<string>('');
+  const [currentTimeIST, setCurrentTimeIST] = useState<string>('');
 
   // Sync navigation with parent state
   useEffect(() => {
@@ -109,12 +109,12 @@ export const AppShell: React.FC<AppShellProps> = ({
     };
   }, []);
 
-  // Update Japan Standard Time clock
+  // Update Indian Standard Time clock
   useEffect(() => {
     const updateTime = () => {
-      setCurrentTimeJST(
-        new Date().toLocaleTimeString('ja-JP', {
-          timeZone: 'Asia/Tokyo',
+      setCurrentTimeIST(
+        new Date().toLocaleTimeString('en-IN', {
+          timeZone: 'Asia/Kolkata',
           hour12: false,
           hour: '2-digit',
           minute: '2-digit',
@@ -286,7 +286,7 @@ export const AppShell: React.FC<AppShellProps> = ({
 
         {/* Status Indicators & Mobile Menu Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {/* JST Clock */}
+          {/* IST Clock */}
           <div
             style={{
               display: 'flex',
@@ -301,9 +301,9 @@ export const AppShell: React.FC<AppShellProps> = ({
               border: '1px solid rgba(220, 38, 38, 0.3)',
             }}
           >
-            <Clock size={14} color="#ef4444" />
-            <span>{currentTimeJST || '00:00:00'}</span>
-            <span style={{ fontSize: '0.7rem', color: '#ff6b6b' }}>JST</span>
+            <Clock size={14} color="var(--gold-moon)" />
+            <span>{currentTimeIST || '00:00:00'}</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--washi-muted)' }}>IST</span>
           </div>
 
           {/* Backend Status Dot */}
