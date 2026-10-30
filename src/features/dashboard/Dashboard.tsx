@@ -84,59 +84,59 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
     };
   }, []);
 
-  // 4 Minimal Cards: Clean, straightforward, 1 line max under section heading
+  // 4 Cards: Curated, immersive, prominent mission gateways
   const cards: MinimalCardConfig[] = [
     {
       id: 'watchtower',
       gate: 'GATE 01',
       tag: 'ORBIT',
       title: 'Watchtower',
-      oneLineDesc: 'Real-time ISS orbital tracking, citadel passes, and dark sky forecasting.',
+      oneLineDesc: 'Real-time ISS orbital tracking, feudal citadel visible passes, and dark sky seeing forecast.',
       statusBadge: '● LIVE 418 KM',
       launchText: 'LAUNCH WATCHTOWER',
       statLabel: 'Orbit Alt / Velocity',
       statValue: '~418 km • 27.6k km/h',
       artwork: <WatchtowerIllustration />,
-      icon: <Satellite size={18} color="#ff4d4d" />,
+      icon: <Satellite size={22} color="#ff4d4d" />,
     },
     {
       id: 'scroll',
       gate: 'GATE 02',
       tag: 'LUNAR',
       title: 'Celestial Scroll',
-      oneLineDesc: 'SunCalc lunar ephemeris, moon phase illumination, and sky events.',
+      oneLineDesc: 'SunCalc lunar ephemeris, real-time moon phase visualization, and celestial chronicle dispatches.',
       statusBadge: `● ${moonTelemetry.illuminationPercent}% MOON`,
       launchText: 'OPEN SCROLL',
       statLabel: 'Current Phase',
       statValue: `${moonTelemetry.illuminationPercent}% • ${moonTelemetry.phaseName}`,
       artwork: <CelestialScrollIllustration />,
-      icon: <Scroll size={18} color="#ff4d4d" />,
+      icon: <Scroll size={22} color="#ff4d4d" />,
     },
     {
       id: 'spirit-lens',
       gate: 'GATE 03',
       tag: 'VISION',
       title: 'Spirit Lens',
-      oneLineDesc: 'AI computer vision detecting deep-sky nebulae, clusters, and constellations.',
+      oneLineDesc: 'AI celestial vision detecting deep-sky nebulae, open star clusters, and constellation lore.',
       statusBadge: '● AI CORE READY',
       launchText: 'ACTIVATE LENS',
       statLabel: 'Target Sector',
       statValue: 'Orion M42 • Mōri Clan',
       artwork: <SpiritLensIllustration />,
-      icon: <Eye size={18} color="#ff4d4d" />,
+      icon: <Eye size={22} color="#ff4d4d" />,
     },
     {
       id: 'dojo',
       gate: 'GATE 04',
       tag: 'DOJO',
       title: 'Restoration Dojo',
-      oneLineDesc: 'Astrophoto noise reduction and star sharpening with interactive slider.',
+      oneLineDesc: 'Astronomical image denoising and star sharpness enhancement with interactive split-pane slider.',
       statusBadge: '● +18.4 dB SNR',
       launchText: 'ENTER DOJO',
       statLabel: 'Restoration Gain',
       statValue: '+18.4 dB SNR • 94% Noise Clean',
       artwork: <DojoIllustration />,
-      icon: <Sword size={18} color="#ff4d4d" />,
+      icon: <Sword size={22} color="#ff4d4d" />,
     },
   ];
 
@@ -179,7 +179,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
         </div>
       </header>
 
-      {/* 3. The 4 Minimal Banner Cards Deck */}
+      {/* 3. The 4 Centered & Enlarged Mission Gateways Deck */}
       <main className="jrpg-cards-deck">
         {cards.map((card) => (
           <article
@@ -196,7 +196,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
             }}
             aria-label={`Enter section ${card.title}`}
           >
-            {/* Corner Brackets in Blood Red */}
+            {/* Corner Brackets in Imperial Gold */}
             <div className="card-corner-ornament corner-top-left" />
             <div className="card-corner-ornament corner-top-right" />
             <div className="card-corner-ornament corner-bottom-left" />
@@ -216,29 +216,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
 
               {/* Title Block */}
               <div className="jrpg-card-title-block">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   {card.icon}
-                  <h2 className="jrpg-card-japanese-title" style={{ margin: 0, fontSize: '1.35rem' }}>
+                  <h2 className="jrpg-card-japanese-title">
                     {card.title}
                   </h2>
                 </div>
               </div>
 
-              {/* Just One Line Max Text Under Heading */}
-              <p
-                className="jrpg-card-description"
-                style={{
-                  margin: '8px 0 16px 0',
-                  fontSize: '0.86rem',
-                  color: '#d4d4d8',
-                  lineHeight: '1.4',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '100%',
-                }}
-                title={card.oneLineDesc}
-              >
+              {/* Description */}
+              <p className="jrpg-card-description">
                 {card.oneLineDesc}
               </p>
 
@@ -258,7 +245,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
                   }}
                 >
                   <span>{card.launchText}</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </div>
@@ -273,10 +260,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSelectOption }) => {
         ))}
       </main>
 
-      {/* 4. Minimal Footer */}
-      <footer className="jrpg-dashboard-footer" style={{ marginTop: '24px', paddingTop: '18px' }}>
+      {/* 4. Balanced Command Footer */}
+      <footer className="jrpg-dashboard-footer">
         <div className="footer-system-info">
-          TSUKUYOMI COMMAND v0.1.0 • SYSTEM OPERATIONAL
+          TSUKUYOMI COMMAND v0.1.0 • CELESTIAL GUIDANCE ACTIVE
         </div>
       </footer>
     </div>
