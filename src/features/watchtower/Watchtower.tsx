@@ -109,7 +109,7 @@ const QUICK_OBSERVATORIES: Place[] = [
 // Custom Leaflet Icons for Samurai Stargazing Theme
 const citadelMarkerIcon = L.divIcon({
   className: "iss-custom-marker",
-  html: `<div class="wt-citadel-pin" title="Feudal Stargazing Watchpost"></div>`,
+  html: `<div class="wt-citadel-pin" title="Base Citadel Stargazing Post"></div>`,
   iconSize: [26, 26],
   iconAnchor: [13, 13],
   popupAnchor: [0, -13],
@@ -153,6 +153,10 @@ function RecenterMap({
 
 function localHour(time: string): number {
   return Number(time.split("T")[1]?.slice(0, 2) ?? 0);
+}
+
+function formatLocalTime(time: string): string {
+  return time.replace("T", " ");
 }
 
 function localNowKey(timezone: string): string {
@@ -212,6 +216,7 @@ export const Watchtower: React.FC = () => {
   const [locationMessage, setLocationMessage] = useState("");
   const [retryCount, setRetryCount] = useState(0);
 
+  const mapScrollRef = useRef<HTMLDivElement>(null);
   const searchController = useRef<AbortController | null>(null);
 
   // Search for cities using Open-Meteo's geocoding API
@@ -285,22 +290,22 @@ export const Watchtower: React.FC = () => {
       (position) => {
         const place: Place = {
           id: "browser-current-location",
-          name: "Current GPS Station",
+          name: "Current GPS Location",
           country: "India",
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           timezone: "Asia/Kolkata",
         };
 
-        setQuery("Current GPS Station");
+        setQuery("Current GPS Location");
         choosePlace(place);
-        setLocationMessage("Using your device coordinates.");
+        setLocationMessage("Using your device GPS coordinates.");
       },
       (error) => {
         const message =
           error.code === error.PERMISSION_DENIED
-            ? "Location permission was denied. You can choose from the quick observatories or search manually."
-            : "Could not determine your location. Please select an observatory.";
+            ? "Location permission was denied. You can choose from the celestial gateways or search manually."
+            : "Could not determine your location. Please select a city or observatory.";
         setLocationMessage(message);
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
@@ -396,44 +401,6 @@ export const Watchtower: React.FC = () => {
       })
     : null;
 
-  const honorScoreDetails = useMemo(() => {
-    if (honorScore === null) return null;
-    if (honorScore >= 80) {
-      return {
-        score: honorScore,
-        kanjiGrade: "極上 · GOKUJŌ",
-        tier: "Legendary Clear Sky (Promising Viewing)",
-        summary:
-          "Crystal atmospheric transparency and minimal cloud interference. Prime conditions for deep-sky imaging and faint nebulae tracking.",
-      };
-    }
-    if (honorScore >= 60) {
-      return {
-        score: honorScore,
-        kanjiGrade: "上等 · JŌTŌ",
-        tier: "Favorable Stargazing (Mixed Conditions)",
-        summary:
-          "Solid visibility for planetary tracking, lunar craters, and brighter double stars. Minor high-altitude passing haze.",
-      };
-    }
-    if (honorScore >= 40) {
-      return {
-        score: honorScore,
-        kanjiGrade: "中等 · CHŪTŌ",
-        tier: "Challenging Sky (Intermittent Seeing)",
-        summary:
-          "Cloud cover or elevated humidity restricts faint celestial targets. Best suited for high-luminosity lunar surveillance.",
-      };
-    }
-    return {
-      score: honorScore,
-      kanjiGrade: "警戒 · KEIKAI",
-      tier: "Obscured Sky (Adverse Seeing)",
-      summary:
-        "Heavy overcast or precipitation probability dominates. Rest the telescope optics and maintain indoor celestial scroll study.",
-    };
-  }, [honorScore]);
-
   function retryWeather() {
     if (selectedPlace) {
       setRetryCount((count) => count + 1);
@@ -459,6 +426,10 @@ export const Watchtower: React.FC = () => {
       lng: spot.longitude,
       zoom: 13,
     });
+    // Smooth scroll up to the map scroll if out of viewport
+    if (mapScrollRef.current) {
+      mapScrollRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   };
 
   const handleRecenterBase = () => {
@@ -471,7 +442,7 @@ export const Watchtower: React.FC = () => {
 
   return (
     <div className="watchtower">
-      {/* 1. Header & Gateway Search Card */}
+      {/* 1. Header & City Search Card */}
       <section className="sumi-card">
         <div
           style={{
@@ -499,7 +470,7 @@ export const Watchtower: React.FC = () => {
             </h1>
 
             <p className="wt-muted">
-              Inspect evening astronomical seeing, calculate Samurai Honor observing ratings,
+              Inspect evening astronomical seeing, calculate Samurai Night Honor observing scores,
               unroll the celestial scroll map, and discover curated dark-sky sanctuaries.
             </p>
           </div>
@@ -576,124 +547,176 @@ export const Watchtower: React.FC = () => {
             ))}
           </div>
         )}
+
+        {selectedPlace && (
+          <p className="wt-muted" style={{ marginTop: 12 }}>
+            Active Station: <strong>{selectedPlace.name}</strong>
+            {" · "}
+            {selectedPlace.latitude.toFixed(3)}° N, {selectedPlace.longitude.toFixed(3)}° E
+          </p>
+        )}
       </section>
 
-      {/* 2. Samurai Honor Score & Evening Weather Forecast */}
+      {/* 2. Night Honor Score Card */}
       <section className="sumi-card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <MoonStar size={18} color="var(--gold-moon)" />
-              <h2 style={{ fontSize: "1.2rem", margin: 0 }}>
-                Atmospheric Seeing & Samurai Honor Rating
-              </h2>
-            </div>
-            <p className="wt-muted" style={{ margin: "4px 0 0" }}>
-              Active Station: <strong>{selectedPlace.name}</strong>
-            </p>
-          </div>
-
-          {forecast && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <select
-                className="wt-hour-select"
-                value={selectedWeather?.time ?? ""}
-                onChange={(event) => setSelectedTime(event.target.value)}
-                aria-label="Select evening hour"
-              >
-                {eveningHours(forecast).map((hour) => (
-                  <option key={hour.time} value={hour.time}>
-                    {hour.time.slice(11, 16)} IST · Cloud {hour.cloudCover}% · Rain {hour.precipitationProbability}%
-                  </option>
-                ))}
-              </select>
-
-              <button
-                type="button"
-                className="wt-button"
-                onClick={retryWeather}
-                title="Refresh Weather Telemetry"
-                style={{ padding: "8px 12px" }}
-              >
-                <RefreshCw size={14} className={weatherLoading ? "wt-spinner" : ""} />
-              </button>
-            </div>
-          )}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <MoonStar size={20} color="var(--gold-moon)" />
+          <h2 style={{ fontSize: "1.2rem", margin: 0 }}>
+            Atmospheric Seeing &amp; Night Honor Score
+          </h2>
         </div>
 
-        {weatherLoading && (
+        {weatherLoading && !forecast && (
           <p className="wt-muted" role="status">
-            <span className="wt-spinner" /> Retrieving atmospheric weather forecast…
+            <span className="wt-spinner" /> Loading evening forecast…
           </p>
         )}
 
         {weatherError && (
-          <div className="wt-error">
+          <div className="wt-error" role="alert">
             <p>{weatherError}</p>
             <button
               type="button"
               className="wt-button"
               onClick={retryWeather}
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 10 }}
             >
-              Retry Forecast
+              <RefreshCw size={14} />
+              Retry
             </button>
           </div>
         )}
 
-        {selectedWeather && honorScoreDetails && (
+        {forecast && selectedWeather && honorScore !== null && (
           <>
-            <div className="wt-score-layout" style={{ marginBottom: 20 }}>
+            <div className="wt-score-layout">
+              {/* Perfectly Formatted Circular Score Display */}
               <div className="wt-score-circle">
-                <span className="wt-score-number">{honorScoreDetails.score}</span>
-                <span className="wt-score-caption">HONOR SCORE</span>
+                <div className="wt-score-inner">
+                  <div className="wt-score-number">{honorScore}</div>
+                  <div className="wt-score-caption">OUT OF 100</div>
+                </div>
               </div>
 
-              <div style={{ flex: "1 1 300px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span className="hanko-seal" style={{ fontSize: "0.7rem" }}>
-                    {honorScoreDetails.kanjiGrade}
+              {/* Explanatory Assessment with Authentic Kanji Seal */}
+              <div className="wt-score-details">
+                <div className="wt-score-grade-row">
+                  <span className="hanko-seal">
+                    {honorScore >= 75 ? "極上" : honorScore >= 50 ? "上等" : "警戒"}
                   </span>
-                  <strong style={{ fontSize: "1.1rem", color: "var(--gold-moon-bright)" }}>
-                    {honorScoreDetails.tier}
-                  </strong>
+                  <h3 className="wt-score-title">
+                    {honorScore >= 75
+                      ? "Promising Observing Conditions"
+                      : honorScore >= 50
+                        ? "Mixed Observing Conditions"
+                        : "Challenging Observing Conditions"}
+                  </h3>
                 </div>
-                <p style={{ margin: "4px 0 0", color: "var(--washi-silk)", fontSize: "0.9rem" }}>
-                  {honorScoreDetails.summary}
+
+                <p className="wt-muted" style={{ margin: "4px 0" }}>
+                  Approximate planning score for {formatLocalTime(selectedWeather.time)} ({forecast.timezone || "IST"}).
+                </p>
+
+                <p className="wt-muted" style={{ margin: "2px 0 0", fontSize: "0.82rem" }}>
+                  Sky Clearness: {100 - selectedWeather.cloudCover}% · Atmospheric Transparency: {selectedWeather.visibilityKm.toFixed(1)} km
+                </p>
+
+                <p className="wt-muted" style={{ margin: "4px 0 0", fontSize: "0.78rem" }}>
+                  Source: Open-Meteo · Live Astronomical Telemetry
                 </p>
               </div>
             </div>
 
-            <div className="wt-metrics">
-              <div className="metric-pill wt-metric">
-                <Cloud size={18} color="var(--gold-moon)" />
-                <span className="wt-metric-label">Cloud Cover</span>
-                <span className="wt-metric-value">{selectedWeather.cloudCover}%</span>
-              </div>
-
-              <div className="metric-pill wt-metric">
-                <Eye size={18} color="var(--gold-moon)" />
-                <span className="wt-metric-label">Atmospheric Visibility</span>
-                <span className="wt-metric-value">{selectedWeather.visibilityKm.toFixed(1)} km</span>
-              </div>
-
-              <div className="metric-pill wt-metric">
-                <Droplets size={18} color="var(--gold-moon)" />
-                <span className="wt-metric-label">Relative Humidity</span>
-                <span className="wt-metric-value">{selectedWeather.humidity}%</span>
-              </div>
-
-              <div className="metric-pill wt-metric">
-                <CloudRain size={18} color="var(--gold-moon)" />
-                <span className="wt-metric-label">Precipitation Chance</span>
-                <span className="wt-metric-value">{selectedWeather.precipitationProbability}%</span>
-              </div>
-            </div>
+            <p className="wt-notice" style={{ marginTop: 16 }}>
+              This samurai honor score weights inverse cloud cover at 55%, visibility at 20%,
+              inverse humidity at 10%, and inverse precipitation probability at 15%. Visibility is
+              normalized against a 20 km reference. It serves as an astronomical planning aid,
+              not a scientific guarantee.
+            </p>
           </>
         )}
       </section>
 
-      {/* 3. Hourly Forecast Horizontal Cards */}
+      {/* 3. Evening Weather Conditions Metrics */}
+      {selectedWeather && (
+        <section className="sumi-card">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+              marginBottom: 16,
+            }}
+          >
+            <div>
+              <h2 style={{ fontSize: "1.15rem", margin: 0 }}>
+                Evening Weather Conditions
+              </h2>
+              <p className="wt-muted" style={{ margin: "4px 0 0" }}>
+                Active Hour: <strong>{formatLocalTime(selectedWeather.time)}</strong>
+              </p>
+            </div>
+
+            {forecast && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <select
+                  id="wt-evening-hour"
+                  className="wt-hour-select"
+                  value={selectedWeather.time}
+                  onChange={(event) => setSelectedTime(event.target.value)}
+                  aria-label="Select evening hour"
+                >
+                  {eveningForecast.map((hour) => (
+                    <option key={hour.time} value={hour.time}>
+                      {hour.time.slice(11, 16)} IST · Cloud {hour.cloudCover}% · Rain {hour.precipitationProbability}%
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  className="wt-button"
+                  onClick={retryWeather}
+                  title="Refresh Telemetry"
+                  style={{ padding: "8px 12px" }}
+                >
+                  <RefreshCw size={14} className={weatherLoading ? "wt-spinner" : ""} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="wt-metrics">
+            <div className="metric-pill wt-metric">
+              <Cloud size={20} color="var(--gold-moon)" />
+              <span className="wt-metric-label">Cloud Cover</span>
+              <span className="wt-metric-value">{selectedWeather.cloudCover}%</span>
+            </div>
+
+            <div className="metric-pill wt-metric">
+              <Eye size={20} color="var(--gold-moon)" />
+              <span className="wt-metric-label">Atmospheric Visibility</span>
+              <span className="wt-metric-value">{selectedWeather.visibilityKm.toFixed(1)} km</span>
+            </div>
+
+            <div className="metric-pill wt-metric">
+              <Droplets size={20} color="var(--gold-moon)" />
+              <span className="wt-metric-label">Relative Humidity</span>
+              <span className="wt-metric-value">{selectedWeather.humidity}%</span>
+            </div>
+
+            <div className="metric-pill wt-metric">
+              <CloudRain size={20} color="var(--gold-moon)" />
+              <span className="wt-metric-label">Precipitation Chance</span>
+              <span className="wt-metric-value">{selectedWeather.precipitationProbability}%</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 4. Hourly Evening Forecast Progression */}
       {forecast && (
         <section className="sumi-card">
           <h2 style={{ fontSize: "1.15rem", marginBottom: 14 }}>
@@ -726,30 +749,27 @@ export const Watchtower: React.FC = () => {
         </section>
       )}
 
-      {/* 4. JAPANESE MAKIMONO SCROLL GUI FOR OBSERVING MAP */}
-      <section className="wt-scroll-container">
-        {/* Top Scroll Roller Rod (Jiku 軸) with Brass Finials */}
+      {/* 5. JAPANESE MAKIMONO SCROLL GUI FOR OBSERVING MAP */}
+      <section className="wt-scroll-wrapper" ref={mapScrollRef}>
+        {/* Top Scroll Wooden Spindle Rod (Jiku 軸) with Brass Caps */}
         <div className="wt-scroll-rod top">
           <div className="wt-scroll-cap left" title="Lacquered Golden Finial (軸先)" />
-
-          <div className="wt-scroll-cord-wrap">
+          <div className="wt-scroll-rod-core">
             <div className="wt-scroll-cord-ring" />
-            <div className="wt-scroll-cord-tassel" />
           </div>
-
           <div className="wt-scroll-cap right" title="Lacquered Golden Finial (軸先)" />
         </div>
 
-        {/* Top Washi Silk Brocade Margin (Ichimonji 一文字) */}
+        {/* Top Silk Brocade Header (Ichimonji 一文字) */}
         <div className="wt-scroll-brocade top">
           <div className="wt-scroll-title-wrap">
-            <span className="hanko-seal" style={{ fontSize: "0.7rem" }}>星図</span>
+            <span className="hanko-seal">星図</span>
             <div>
               <h3 className="wt-scroll-title">
-                星宿巡視絵巻 · Celestial Starmap Scroll
+                星図絵巻 · Celestial Starmap Scroll
               </h3>
               <span className="wt-scroll-subtitle">
-                SURVEY STATION: {selectedPlace.name.toUpperCase()}
+                CITADEL STATION: {selectedPlace.name.toUpperCase()}
               </span>
             </div>
           </div>
@@ -757,34 +777,34 @@ export const Watchtower: React.FC = () => {
           <div className="wt-scroll-tools">
             <button
               type="button"
-              className="wt-tile-toggle"
+              className="wt-scroll-btn"
               onClick={() => setTileMode((m) => (m === "dark" ? "standard" : "dark"))}
               title="Toggle Sumi-e Dark Ink / Standard Cartography"
             >
               {tileMode === "dark" ? <MoonStar size={13} color="var(--gold-moon)" /> : <Map size={13} />}
-              <span>{tileMode === "dark" ? "Sumi-e Starmap (Night)" : "Standard Map (Day)"}</span>
+              <span>{tileMode === "dark" ? "Sumi-e Dark (Night)" : "Standard Map (Day)"}</span>
             </button>
 
             <button
               type="button"
-              className="wt-tile-toggle"
+              className="wt-scroll-btn"
               onClick={handleRecenterBase}
               title="Recenter to Base Watchpost"
             >
               <Crosshair size={13} color="var(--vermilion-bright)" />
-              <span>Base Citadel</span>
+              <span>Base Station</span>
             </button>
           </div>
         </div>
 
         {/* The Silk Canvas Window (Interactive Map Body) */}
-        <div className="wt-scroll-canvas">
+        <div className={`wt-scroll-canvas ${tileMode === "dark" ? "dark-starmap" : ""}`}>
           <div className="wt-map">
             <MapContainer
               center={[mapCenter.lat, mapCenter.lng]}
               zoom={mapCenter.zoom}
               scrollWheelZoom
-              style={{ height: "100%", width: "100%" }}
+              style={{ height: "100%", width: "100%", background: "#090a0f" }}
             >
               <RecenterMap
                 latitude={mapCenter.lat}
@@ -792,20 +812,13 @@ export const Watchtower: React.FC = () => {
                 zoom={mapCenter.zoom}
               />
 
-              {/* Seamless Tile Layers: CartoDB Dark Matter for Authentic Night Starmap or OSM Standard */}
-              {tileMode === "dark" ? (
-                <TileLayer
-                  attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                />
-              ) : (
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-              )}
+              {/* 100% Free, OpenStreetMap Tiles with Zero API Key and Zero Watermarks! */}
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
 
-              {/* Red Samurai Crest Pin: Selected Citadel Station */}
+              {/* Red Samurai Seal Pin: Selected Citadel Station */}
               <Marker
                 position={[selectedPlace.latitude, selectedPlace.longitude]}
                 icon={citadelMarkerIcon}
@@ -819,7 +832,7 @@ export const Watchtower: React.FC = () => {
                       </strong>
                     </div>
                     <div style={{ color: "var(--washi-silk)", fontSize: "0.78rem" }}>
-                      Active Feudal Stargazing Citadel
+                      Active Stargazing Citadel
                     </div>
                     <div style={{ color: "var(--washi-muted)", fontSize: "0.74rem", marginTop: 4 }}>
                       Coords: {selectedPlace.latitude.toFixed(4)}° N, {selectedPlace.longitude.toFixed(4)}° E
@@ -828,7 +841,7 @@ export const Watchtower: React.FC = () => {
                 </Popup>
               </Marker>
 
-              {/* Green / Gold Pins: Nearby Astronomical Observing Spots */}
+              {/* Nearby Astronomical Observing Spots */}
               {filteredSpots.map((spot) => (
                 <Marker
                   key={spot.id}
@@ -868,7 +881,7 @@ export const Watchtower: React.FC = () => {
           </div>
         </div>
 
-        {/* Lower Washi Silk Brocade Margin (Chi-Brocade 地文字) */}
+        {/* Lower Silk Brocade Margin (Chi-Brocade 地文字) */}
         <div className="wt-scroll-brocade bottom">
           <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
             <span>
@@ -882,30 +895,20 @@ export const Watchtower: React.FC = () => {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Sparkles size={12} color="var(--gold-moon)" />
             <span>
-              MAPPED SANCTUARIES: <strong>{filteredSpots.length} SITES</strong>
+              MAPPED SITES: <strong>{filteredSpots.length} SANCTUARIES</strong>
             </span>
           </div>
         </div>
 
-        {/* Bottom Scroll Roller Rod with Silk Weights (Fūchin 風鎮) */}
+        {/* Bottom Scroll Wooden Spindle Rod (Jiku 軸) with Brass Caps */}
         <div className="wt-scroll-rod bottom">
           <div className="wt-scroll-cap left" title="Lacquered Golden Finial (軸先)" />
-
-          <div className="wt-scroll-fuchin left">
-            <div className="wt-fuchin-cord" />
-            <div className="wt-fuchin-bead" />
-          </div>
-
-          <div className="wt-scroll-fuchin right">
-            <div className="wt-fuchin-cord" />
-            <div className="wt-fuchin-bead" />
-          </div>
-
+          <div className="wt-scroll-rod-core" />
           <div className="wt-scroll-cap right" title="Lacquered Golden Finial (軸先)" />
         </div>
       </section>
 
-      {/* 5. NEARBY OBSERVING SUGGESTIONS OVERHAUL */}
+      {/* 6. NEARBY OBSERVING SUGGESTIONS OVERHAUL */}
       <section className="wt-suggestions-section sumi-card">
         <div className="wt-suggestions-header">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -915,7 +918,7 @@ export const Watchtower: React.FC = () => {
                 Nearby Astronomical Observing Sanctuaries
               </h2>
               <p className="wt-muted" style={{ margin: "2px 0 0" }}>
-                Identified viewpoints, high-altitude ridges, and dark-sky reserves within stargazing proximity.
+                Curated viewpoints, high-altitude ridges, and dark-sky reserves within stargazing proximity.
               </p>
             </div>
           </div>

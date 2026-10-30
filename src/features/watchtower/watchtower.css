@@ -1,3 +1,6 @@
+/* ========================================================
+   TSUKUYOMI WATCH — WATCHTOWER (NIGHT SKY CITADEL)
+   ======================================================== */
 
 .watchtower {
   display: flex;
@@ -12,7 +15,7 @@
   line-height: 1.6;
 }
 
-/* Quick Observatories Bar */
+/* 1. Quick Observatories Bar */
 .wt-quick-bar {
   display: flex;
   align-items: center;
@@ -50,6 +53,7 @@
   background: rgba(229, 193, 88, 0.14);
 }
 
+/* 2. City Search Form */
 .watchtower .wt-search-form {
   display: flex;
   gap: 10px;
@@ -59,7 +63,7 @@
 
 .watchtower .wt-search-input {
   flex: 1;
-  min-width: 180px;
+  min-width: 220px;
   padding: 12px 14px;
   color: var(--washi-white);
   background: rgba(13, 15, 21, 0.85);
@@ -146,12 +150,88 @@
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .watchtower .wt-place-option:hover {
   border-color: var(--gold-moon);
   background: rgba(229, 193, 88, 0.08);
 }
+
+/* ========================================================
+   3. SAMURAI NIGHT HONOR SCORE FORMATTING (FIXED & RESTORED)
+   ======================================================== */
+
+.watchtower .wt-score-layout {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* Authentic circular score badge with gold glow */
+.watchtower .wt-score-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 120px;
+  width: 120px;
+  height: 120px;
+  border: 4px solid var(--gold-moon);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 185, 89, 0.14) 0%, rgba(13, 15, 21, 0.9) 70%);
+  box-shadow: 0 0 20px rgba(229, 185, 89, 0.25), inset 0 0 15px rgba(229, 185, 89, 0.08);
+  text-align: center;
+}
+
+.watchtower .wt-score-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.watchtower .wt-score-number {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold-moon-bright);
+  text-shadow: 0 0 14px var(--gold-glow);
+}
+
+.watchtower .wt-score-caption {
+  color: var(--washi-muted);
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+.watchtower .wt-score-details {
+  flex: 1;
+  min-width: 220px;
+}
+
+.watchtower .wt-score-grade-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.watchtower .wt-score-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--washi-white);
+  margin: 0;
+}
+
+/* ========================================================
+   4. EVENING WEATHER METRICS & HOURLY PROGRESSION
+   ======================================================== */
 
 .watchtower .wt-metrics {
   display: grid;
@@ -177,43 +257,12 @@
   overflow-wrap: anywhere;
 }
 
-.watchtower .wt-score-layout {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.watchtower .wt-score-circle {
-  display: grid;
-  place-items: center;
-  flex: 0 0 120px;
-  width: 120px;
-  height: 120px;
-  border: 5px solid var(--gold-moon);
-  border-radius: 50%;
-  background: rgba(229, 185, 89, 0.07);
-  text-align: center;
-}
-
-.watchtower .wt-score-number {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--gold-moon);
-}
-
-.watchtower .wt-score-caption {
-  color: var(--washi-muted);
-  font-size: 0.72rem;
-}
-
 .watchtower .wt-hour-select {
   width: 100%;
   max-width: 320px;
   padding: 10px;
   color: var(--washi-white);
-  background: rgba(13, 15, 21, 0.8);
+  background: rgba(13, 15, 21, 0.85);
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-sm);
   font: inherit;
@@ -221,7 +270,7 @@
 
 .watchtower .wt-hourly-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
   gap: 10px;
 }
 
@@ -247,115 +296,70 @@
 }
 
 /* ========================================================
-   JAPANESE MAKIMONO SCROLL GUI FOR OBSERVING MAP
+   5. JAPANESE MAKIMONO SCROLL GUI FOR OBSERVING MAP
    ======================================================== */
 
-.wt-scroll-container {
+.wt-scroll-wrapper {
   position: relative;
-  margin: 16px 0 28px;
-  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.65));
+  width: 100%;
+  margin: 10px 0 20px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
 }
 
-/* 1. Scroll Wooden Spindle Rods (Top and Bottom) */
+/* Scroll Lacquered Spindle Rods (八双 Hassō / 軸木 Jikugi) */
 .wt-scroll-rod {
   position: relative;
-  height: 22px;
-  background: linear-gradient(180deg, #3d2314 0%, #1a0f08 45%, #2c1a0e 75%, #0f0805 100%);
-  border-radius: 11px;
+  height: 20px;
+  background: linear-gradient(180deg, #382012 0%, #1a0d06 48%, #2b180d 80%, #120904 100%);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 215, 0, 0.25);
+  border-top: 1px solid rgba(255, 215, 0, 0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.8);
   z-index: 10;
+  padding: 0 4px;
 }
 
 .wt-scroll-rod.top {
-  margin-bottom: -4px;
+  border-radius: 8px 8px 0 0;
 }
 
 .wt-scroll-rod.bottom {
-  margin-top: -4px;
+  border-radius: 0 0 8px 8px;
 }
 
-/* Ornamental Gold Finials (Jikutō 軸先) */
+/* Ornamental Gold Finials (軸先 Jikusaki) */
 .wt-scroll-cap {
-  width: 28px;
-  height: 30px;
-  background: radial-gradient(circle at 40% 35%, #ffeaa7 0%, #d4af37 55%, #8c7324 100%);
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  width: 22px;
+  height: 24px;
+  background: radial-gradient(circle at 40% 35%, #ffe494 0%, #d4af37 55%, #7a5f1e 100%);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 215, 0, 0.6);
-  position: relative;
+  flex-shrink: 0;
 }
 
-.wt-scroll-cap.left {
-  margin-left: -12px;
-}
-
-.wt-scroll-cap.right {
-  margin-right: -12px;
-}
-
-/* Braided Silk Cord (Kakeo) hanging from top rod */
-.wt-scroll-cord-wrap {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
+.wt-scroll-rod-core {
+  flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  pointer-events: none;
+  justify-content: center;
+  height: 100%;
 }
 
 .wt-scroll-cord-ring {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 2px solid var(--gold-moon-bright);
-  box-shadow: 0 0 10px var(--gold-glow);
+  box-shadow: 0 0 8px var(--gold-glow);
+  opacity: 0.85;
 }
 
-.wt-scroll-cord-tassel {
-  width: 2px;
-  height: 12px;
-  background: var(--vermilion-bright);
-}
-
-/* Hanging Silk Weights (Fūchin 風鎮) at bottom rod */
-.wt-scroll-fuchin {
-  position: absolute;
-  bottom: -24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-
-.wt-scroll-fuchin.left {
-  left: 14px;
-}
-
-.wt-scroll-fuchin.right {
-  right: 14px;
-}
-
-.wt-fuchin-cord {
-  width: 2px;
-  height: 14px;
-  background: var(--vermilion);
-}
-
-.wt-fuchin-bead {
-  width: 12px;
-  height: 14px;
-  background: radial-gradient(circle at 35% 35%, #fff 0%, #4e9b72 60%, #1f422e 100%);
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-}
-
-/* 2. Scroll Silk Brocade (Ichimonji 一文字) */
+/* Scroll Silk Brocade Margins (一文字 Ichimonji) */
 .wt-scroll-brocade {
   background: linear-gradient(180deg, #181b24 0%, #0d0f14 100%);
   border-left: 2px solid rgba(229, 193, 88, 0.4);
@@ -397,14 +401,16 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--washi-white);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   margin: 0;
 }
 
 .wt-scroll-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--gold-moon);
   font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  display: block;
 }
 
 .wt-scroll-tools {
@@ -413,35 +419,36 @@
   gap: 8px;
 }
 
-.wt-tile-toggle {
-  background: rgba(7, 8, 11, 0.8);
+.wt-scroll-btn {
+  background: rgba(7, 8, 11, 0.85);
   border: 1px solid var(--border-ink);
   color: var(--washi-silk);
-  font-size: 0.74rem;
-  padding: 4px 10px;
+  font-size: 0.75rem;
+  padding: 5px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.15s;
+  gap: 6px;
+  transition: all 0.15s ease;
 }
 
-.wt-tile-toggle:hover {
+.wt-scroll-btn:hover {
   border-color: var(--gold-border);
   color: var(--gold-moon-bright);
+  background: rgba(229, 193, 88, 0.12);
 }
 
-/* 3. Scroll Silk Canvas Window (Map Body) */
+/* Scroll Canvas Window (Interactive Map Body) */
 .wt-scroll-canvas {
   position: relative;
-  background: #0d0f14;
+  background: #090a0f;
   border-left: 2px solid rgba(229, 193, 88, 0.4);
   border-right: 2px solid rgba(229, 193, 88, 0.4);
   overflow: hidden;
 }
 
-/* Subtle parchment curled edge shadow */
+/* Subtle scroll parchment edge curl shadow */
 .wt-scroll-canvas::before,
 .wt-scroll-canvas::after {
   content: '';
@@ -465,11 +472,20 @@
 
 .watchtower .wt-map {
   width: 100%;
-  height: 480px;
+  height: 440px;
   background: #090a0f;
 }
 
-/* Custom Leaflet Map styling in scroll */
+/* ========================================================
+   DARK STARMAP TILE FILTER
+   Transforms 100% free OSM tiles into Sumi-e midnight starmap.
+   ZERO API keys required. ZERO watermarks. ZERO white tiles.
+   ======================================================== */
+.wt-scroll-canvas.dark-starmap .leaflet-tile-pane {
+  filter: brightness(0.62) invert(1) contrast(1.7) hue-rotate(200deg) saturate(0.35) brightness(0.8);
+}
+
+/* Custom Leaflet Map styling */
 .watchtower .leaflet-container {
   font-family: var(--font-sans);
   background: #090a0f !important;
@@ -505,7 +521,7 @@
   border: none;
 }
 
-/* Pulsating Citadel Marker */
+/* Pulsating Citadel Marker (Base Watchpost) */
 .wt-citadel-pin {
   width: 26px;
   height: 26px;
@@ -566,7 +582,7 @@
 }
 
 /* ========================================================
-   NEARBY OBSERVING SUGGESTIONS OVERHAUL
+   6. NEARBY OBSERVING SUGGESTIONS OVERHAUL
    ======================================================== */
 
 .wt-suggestions-section {
@@ -649,13 +665,6 @@
   line-height: 1.35;
 }
 
-.wt-spot-badges {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
 .wt-bortle-badge {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -732,7 +741,7 @@
   padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
 }
 
 .wt-spot-locate-btn:hover {
@@ -785,11 +794,7 @@
     height: 100px;
   }
 
-  .wt-scroll-cap.left {
-    margin-left: -6px;
-  }
-
-  .wt-scroll-cap.right {
-    margin-right: -6px;
+  .watchtower .wt-score-number {
+    font-size: 2rem;
   }
 }
